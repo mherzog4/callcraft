@@ -32,7 +32,7 @@ Gong poller -> SQLite job queue -> call/context/transcript
   -> Gmail API submission -> Slack status update
 ```
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for state machines, idempotency, and trust boundaries. Adapters are defined for transcript source, generation, draft destination, and email sender. Demo and real implementations use the same normalized contracts; real failures never fall back to demo data.
+See the [documentation index](docs/README.md), [architecture guide](docs/ARCHITECTURE.md), and [architecture decision records](docs/adr/README.md) for state machines, trust boundaries, and the trade-offs behind the system. Adapters are defined for transcript source, generation, draft destination, and email sender. Demo and real implementations use the same normalized contracts; real failures never fall back to demo data.
 
 ## Real provider setup
 

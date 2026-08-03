@@ -2,6 +2,8 @@
 
 The app is a single-node Next.js web process plus a separately invokable SQLite worker. Both use the same repository layer. Adapters isolate Gong, OpenRouter, Slack, and Gmail. Demo adapters implement the same contracts and never activate as fallback from a real provider failure.
 
+The rationale for durable architectural choices lives in the [ADR index](./adr/README.md). This document describes the current system; ADRs explain why it has that shape.
+
 ## Automatic call lifecycle
 
 ```text
