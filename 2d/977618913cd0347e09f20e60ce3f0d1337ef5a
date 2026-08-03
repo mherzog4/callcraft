@@ -1,0 +1,227 @@
+.dockerignore
+  s_2ac3e805338bf9::t_2eb434228ee06b 1-8
+.env.example
+  s_2ac3e805338bf9::t_09f15ed381b85b 1-18
+.github/workflows/ci.yml
+  s_2ac3e805338bf9::t_1f4ff15fbf3ab3 1-29
+.gitignore
+  s_40d1e8a8d578cb::t_485e0b7799e7b7 1-15
+.prettierrc.json
+  s_40d1e8a8d578cb::t_fb332e2c3206c0 1-6
+CONTRIBUTING.md
+  s_2ac3e805338bf9::t_a993a108224304 1-11
+Dockerfile
+  s_2ac3e805338bf9::t_9323e9bb4111a0 1-23
+LICENSE
+  s_2ac3e805338bf9::t_8a24e947f4081c 1-9
+README.md
+  s_33b38b54d4dfd2::t_1968d5bdb6fa64 1-106
+SECURITY.md
+  s_2ac3e805338bf9::t_aba989e7f0ffde 1-7
+app/api/demo/reset/route.ts
+  s_2ac3e805338bf9::t_67763c139ba5c3 1-22
+app/api/google/disconnect/route.ts
+  s_2ac3e805338bf9::t_4b56f9ade1cead 1-36
+app/api/google/oauth/callback/route.ts
+  s_2f35c586a11842::t_7671b010a25846 1-54
+app/api/google/oauth/start/route.ts
+  s_b1e2b1bf4e6084::t_9b92cf2a7eb6ef 1-37
+app/api/health/route.ts
+  s_65e8d77788d7d8::t_3701721dc0d3ee 1-12
+app/api/send/route.ts
+  s_2f35c586a11842::t_2c7d6993d1a92f 1-31
+app/api/setup/route.ts
+  s_3481fc703cc23e::t_0a9d7ac6bc0f15 1-138
+app/api/slack/interactions/route.ts
+  s_3481fc703cc23e::t_2dad4d0aaeff75 1-248
+app/api/slack/oauth/callback/route.ts
+  s_2ac3e805338bf9::t_a0e8f75dca7160 1-105
+app/api/slack/oauth/start/route.ts
+  s_b1e2b1bf4e6084::t_a4b14589db4ad7 1-31
+app/calls/[id]/page.tsx
+  s_b1e2b1bf4e6084::t_7ecd291d3b800d 1-133
+app/globals.css
+  s_65e8d77788d7d8::t_df6d6983c634b2 1-235
+app/layout.tsx
+  s_65e8d77788d7d8::t_d2e35a9884e2c9 1-33
+app/not-found.tsx
+  s_65e8d77788d7d8::t_a726df551eeb6c 1-11
+app/settings/page.tsx
+  s_3481fc703cc23e::t_d4ab503aae9c21 1-188
+compose.yaml
+  s_2ac3e805338bf9::t_371e6d4d636c15 1-24
+docs/slack-manifest.yaml
+  s_2ac3e805338bf9::t_d3bd94ccf2cd18 1-26
+drizzle.config.ts
+  s_33b38b54d4dfd2::t_5125485f09d4ca 1-8
+drizzle/0000_last_husk.sql
+  s_65e8d77788d7d8::t_dce4a408aba22e 1-214
+drizzle/0001_living_tony_stark.sql
+  s_b1e2b1bf4e6084::t_3bd06c69378f0a 1-56
+drizzle/meta/0000_snapshot.json
+  s_65e8d77788d7d8::t_6dc5d8eb2f4f3f 1-1419
+drizzle/meta/0001_snapshot.json
+  s_b1e2b1bf4e6084::t_c6b29f27204099 1-1447
+drizzle/meta/_journal.json
+  s_b1e2b1bf4e6084::t_c8709e09c15f82 1-20
+scripts/migrate.ts
+  s_33b38b54d4dfd2::t_41e741de360878 1-6
+scripts/seed.ts
+  s_33b38b54d4dfd2::t_2487dfcd88e01e 1-8
+src/db/client.ts
+  s_65e8d77788d7d8::t_f188fe33ae2669 1-28
+src/db/repositories.ts
+  s_db7dc8834d1753::t_812b4c2f8fe274 1-844
+src/db/schema.ts
+  s_2f35c586a11842::t_8c80093270574a 1-317
+src/domain/schemas.ts
+  s_2f35c586a11842::t_3ee767daffb71a 1-165
+src/env.ts
+  s_2ac3e805338bf9::t_9d83b1e08c4139 1-39
+src/integrations/email/mime.ts
+  s_40d1e8a8d578cb::t_2ad6f7d6ef22aa 1-33
+src/integrations/email/types.ts
+  s_65e8d77788d7d8::t_93403ee0f563b3 1-25
+src/integrations/gong/contract.ts
+  s_65e8d77788d7d8::t_6b9815f365352d 1-32
+src/integrations/gong/fixtures.ts
+  s_65e8d77788d7d8::t_61341570a69916 1-110
+src/integrations/gong/real.ts
+  s_b1e2b1bf4e6084::t_3e1756acbcdd65 1-170
+src/integrations/gong/service.ts
+  s_2f35c586a11842::t_2acc8c5b11b32a 1-22
+src/integrations/openrouter/client.ts
+  s_2f35c586a11842::t_bd76a95405f181 1-181
+src/integrations/openrouter/grounded.ts
+  s_3481fc703cc23e::t_856f80d913af96 1-79
+src/integrations/openrouter/mock.ts
+  s_2f35c586a11842::t_454cca49dbb5fe 1-73
+src/integrations/openrouter/types.ts
+  s_65e8d77788d7d8::t_cb775ecc011270 1-37
+src/integrations/slack/client.ts
+  s_40d1e8a8d578cb::t_82e5531ee706c8 1-71
+src/integrations/slack/deferred.ts
+  s_33b38b54d4dfd2::t_d01df3389affdc 1-15
+src/integrations/slack/render.ts
+  s_40d1e8a8d578cb::t_73981e86a23050 1-232
+src/integrations/slack/signature.ts
+  s_65e8d77788d7d8::t_ad50f94f07be4c 1-18
+src/jobs/setup.ts
+  s_2f35c586a11842::t_98900e89546f83 1-12
+src/jobs/worker.ts
+  s_3481fc703cc23e::t_00d468ac1ed77d 1-553
+src/security/crypto.ts
+  s_65e8d77788d7d8::t_21de7bfdcf8814 1-45
+src/security/logger.ts
+  s_65e8d77788d7d8::t_02668efa7b1228 1-21
+src/security/rate-limit.ts
+  s_2ac3e805338bf9::t_3c62004b9214b3 1-13
+src/security/request-id.ts
+  s_2ac3e805338bf9::t_85e950710b0300 1-5
+src/security/session.ts
+  s_2f35c586a11842::t_ca98508603251a 1-30
+src/web/auth.ts
+  s_b1e2b1bf4e6084::t_3d7b0893ba79a8 1-48
+src/web/request.ts
+  s_2ac3e805338bf9::t_500ac750e1c56f 1-13
+tests/contract/gong.test.ts
+  s_2f35c586a11842::t_faefbe70607307 1-34
+tests/contract/openrouter.test.ts
+  s_2f35c586a11842::t_90c7e1dbfd0c56 1-50
+tests/e2e/dashboard.spec.ts
+  s_2f35c586a11842::t_ae80d04447f61b 1-10
+tests/integration/database.test.ts
+  s_3481fc703cc23e::t_38319135bd685f 1-71
+tests/integration/setup.test.ts
+  s_2f35c586a11842::t_0bbb0aa0cec127 1-106
+tests/integration/worker.test.ts
+  s_3481fc703cc23e::t_497152afc31e24 1-147
+tests/unit/email.test.ts
+  s_2f35c586a11842::t_6ccb805c21834c 1-23
+tests/unit/security.test.ts
+  s_b1e2b1bf4e6084::t_1e29f74218e763 1-66
+tests/unit/slack.test.ts
+  s_ed4d5c9bcc57d0::t_e2e97eeb35877e 1-74
+vitest.config.ts
+  s_40d1e8a8d578cb::t_fe7dadcf710395 1-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "2d977618913cd0347e09f20e60ce3f0d1337ef5a",
+  "prompts": {},
+  "sessions": {
+    "s_2ac3e805338bf9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "019fb9bb-1e64-7981-92e1-7d5fe269be20",
+        "model": "unknown"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    },
+    "s_2f35c586a11842": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "019fb8b9-aa7c-75b3-8298-981d18930171",
+        "model": "unknown"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    },
+    "s_33b38b54d4dfd2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "019fab42-261b-7742-81cd-b64321858e38",
+        "model": "unknown"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    },
+    "s_3481fc703cc23e": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "019fba1a-b48c-7f20-a928-b973999cdd12",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    },
+    "s_40d1e8a8d578cb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fb8b9-aa7c-75b3-8298-981d18930171",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    },
+    "s_65e8d77788d7d8": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "019fb9d8-6f79-7862-ac99-b67a88d873af",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    },
+    "s_b1e2b1bf4e6084": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "019fb9f9-98ce-79bd-add0-440b7c4f806d",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    },
+    "s_db7dc8834d1753": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fab42-261b-7742-81cd-b64321858e38",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    },
+    "s_ed4d5c9bcc57d0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fba18-4237-7210-91a5-170750458fa8",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    }
+  }
+}
