@@ -1,0 +1,153 @@
+docs/adr/README.md
+  s_a7553d23a94897::t_40fab5d4321ce2 10
+app/api/jobs/run/route.ts
+  s_a7553d23a94897::t_1da230a8bc0300 7
+  s_a7553d23a94897::t_b2720e15374bd3 16-20
+tests/integration/evaluation-worker.test.ts
+  s_a7553d23a94897::t_f52afc078b5df2 1-194
+app/api/send/route.ts
+  s_a7553d23a94897::t_e621133a929be9 5,15
+src/jobs/worker.ts
+  s_a7553d23a94897::t_f28f09ebf552f7 14,323,388
+  s_a7553d23a94897::t_e0a20c80388eea 60,541,543-544,548-550
+  s_a7553d23a94897::t_019170e8c3273b 568-572
+  s_a7553d23a94897::t_cb030ce314b08a 2,324-327,338-343,350,352-353,355-359
+  s_a7553d23a94897::t_8d7d39334f9e0e 285
+  s_2ac3e805338bf9::t_a245f23197b48e 55-59,61-62,66,68-69,80,96-98,128-131,287,390-391,438-440,457,476
+playwright.config.ts
+  s_a7553d23a94897::t_3f8737c5941632 9
+  s_a7553d23a94897::t_72ca869bede6e5 12
+src/db/repositories.ts
+  s_a7553d23a94897::t_4e62922f77798d 167-169
+  s_a7553d23a94897::t_1035fa0d3e65b5 2
+  s_a7553d23a94897::t_a3406de76b5e2a 850-865,867-885,887-888
+  s_a7553d23a94897::t_53935b8e7e8a5a 13-18,39-45,395,397-398,400-401
+  s_a7553d23a94897::t_fe86350b8094db 19,75
+  s_a7553d23a94897::t_51d092dc862114 866
+plans/live-slack-gmail-without-gong.md
+  s_a7553d23a94897::t_1e38c1b3adf3e6 43-50
+  s_a7553d23a94897::t_48a38237983486 13,42
+  s_a7553d23a94897::t_5c918c8d014495 41,51
+  s_a7553d23a94897::t_372b953e93860b 14
+  s_a7553d23a94897::t_671b94ba19f757 1-12,15-18,27-29,38-40,52-54
+  s_2ac3e805338bf9::t_74d6be5bd49bb7 19-26,30-37,55-63
+src/env.ts
+  s_a7553d23a94897::t_6316e27bc242d1 3-29,31-37,39-46
+  s_a7553d23a94897::t_6021f028b65a24 30
+app/api/demo/reset/route.ts
+  s_a7553d23a94897::t_ff3e92492dd1f5 2,6,13-15,19-28
+.github/workflows/ci.yml
+  s_a7553d23a94897::t_4567431c1f1398 12-15
+  s_a7553d23a94897::t_1ea67092f18c17 31
+src/runtime/policy.ts
+  s_a7553d23a94897::t_9794caa746820b 1-70
+docs/EVALUATION.md
+  s_a7553d23a94897::t_e3b792731978ad 1-127,129-130,133-134,136-175
+  s_a7553d23a94897::t_0ab5f098fba4a6 128,131-132,135
+app/page.tsx
+  s_a7553d23a94897::t_8172add0df714c 5,16,35,41-46,66-87,90-91,93
+  s_a7553d23a94897::t_c20144b85088d9 3
+app/api/slack/interactions/route.ts
+  s_a7553d23a94897::t_65d338790ede6a 12,30,66-73,76-77,104,115,129,175-181,185,202,216,226-228,230-231
+  s_a7553d23a94897::t_3adf98f61d4609 156
+  s_a7553d23a94897::t_403b83ded52678 229
+app/api/setup/route.ts
+  s_a7553d23a94897::t_1951f8ee4c33c6 2,15,26-135,146,162-167,169-170
+src/domain/email-safety.ts
+  s_a7553d23a94897::t_d11386f069c149 1-17
+app/calls/[id]/page.tsx
+  s_a7553d23a94897::t_18f14829a86d9b 1,63-65
+  s_a7553d23a94897::t_4d5ccafc514643 8,15,18-26,34-35,37-39,43-44,53-56,62,66,75,104
+src/web/auth.ts
+  s_a7553d23a94897::t_3c00b4147f6b15 25,41
+  s_a7553d23a94897::t_3ae79d2a64f939 7
+docs/ARCHITECTURE.md
+  s_a7553d23a94897::t_132495fc501cdd 25
+app/api/slack/oauth/start/route.ts
+  s_a7553d23a94897::t_ffc2e1a6b62ac1 4,8
+  s_a7553d23a94897::t_8ea195bf6ae2f4 18-24
+docs/README.md
+  s_a7553d23a94897::t_d0722b1d7e7aec 6
+src/integrations/openrouter/index.ts
+  s_a7553d23a94897::t_d2dbbd82af5ffe 2,12
+  s_a7553d23a94897::t_925be9567160c2 3-5
+docs/adr/0006-explicit-evaluation-provider-policy.md
+  s_a7553d23a94897::t_9d0f8b46f3a5fd 1-22
+tests/integration/oauth-routes.test.ts
+  s_a7553d23a94897::t_c837ad7e37522d 1-46,48-96
+  s_a7553d23a94897::t_650a306f289700 47
+tests/integration/evaluation.test.ts
+  s_a7553d23a94897::t_8dbd9c609bfb8f 16,18,25,68-109
+  s_a7553d23a94897::t_37440c27286e1c 1-15,19-24,26-65,67,110-129,161-171
+  s_a7553d23a94897::t_9614370c2fffb4 17,130-160
+  s_a7553d23a94897::t_f3de4337eb37b4 66
+app/settings/page.tsx
+  s_a7553d23a94897::t_de4ffd772104bf 7,10-21,29-30,33,37,50-54,107-117,155-159,162,167,171,177-180,183-185,194
+  s_a7553d23a94897::t_8adbde1543905e 196-201
+  s_a7553d23a94897::t_44b0579ddcb13f 216,218-223
+app/api/slack/oauth/callback/route.ts
+  s_a7553d23a94897::t_78f85bf054b94d 16,18,39-40,103
+  s_a7553d23a94897::t_23b9aaf30c4ed9 41-46
+app/api/google/oauth/callback/route.ts
+  s_a7553d23a94897::t_195601b3092913 9,12-19
+package.json
+  s_a7553d23a94897::t_4cfe8617d9cc6c 16,18-20
+README.md
+  s_a7553d23a94897::t_2520a6210fc519 38-43,48,79,109
+app/api/google/disconnect/route.ts
+  s_a7553d23a94897::t_6b4d4ec807c117 8,27-28,33
+  s_a7553d23a94897::t_6eb6c320595f34 13-23,37
+docs/slack-manifest.yaml
+  s_a7553d23a94897::t_bb2b5b6ae4f3bb 1-2
+src/integrations/slack/render.ts
+  s_a7553d23a94897::t_e11c55c959636e 39,68,93
+  s_a7553d23a94897::t_80701f25167188 137-141,143
+  s_a7553d23a94897::t_8b1ae0009a2ac7 1,19,26-30,59-61,66-67,80-83,94-103,119
+app/api/google/oauth/start/route.ts
+  s_a7553d23a94897::t_c805252e54f7a3 5,9
+.env.example
+  s_a7553d23a94897::t_d406bfef1dc220 1-3
+tests/unit/runtime-policy.test.ts
+  s_a7553d23a94897::t_d379cb27a91d95 1-57,59-68
+  s_a7553d23a94897::t_8fab20c5fe8a13 58
+src/jobs/setup.ts
+  s_a7553d23a94897::t_44e373c9c88311 3,6,12-13
+src/integrations/gong/index.ts
+  s_a7553d23a94897::t_e472896abb58d1 3-6
+  s_a7553d23a94897::t_ff62856573e504 2,20
+src/demo/seed.ts
+  s_a7553d23a94897::t_d71d40a37db713 4-16,28-29
+  s_a7553d23a94897::t_a9d2934fa9daa9 1
+src/integrations/slack/client.ts
+  s_a7553d23a94897::t_43be048d8bf3bb 13
+  s_a7553d23a94897::t_9f3491e9726266 25
+tests/unit/slack.test.ts
+  s_a7553d23a94897::t_857d3bf2a987e5 60-89
+tests/integration/setup.test.ts
+  s_a7553d23a94897::t_721f0567939710 12,30,42-85,87-91
+  s_a7553d23a94897::t_8fac6bd8931c50 86,152
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "409a93b92d75f5a4df93d5a44f064b2201525e56",
+  "prompts": {},
+  "sessions": {
+    "s_2ac3e805338bf9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "019fb9bb-1e64-7981-92e1-7d5fe269be20",
+        "model": "unknown"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    },
+    "s_a7553d23a94897": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "019fb9be-c851-7c98-bf78-5862013cf419",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    }
+  }
+}
