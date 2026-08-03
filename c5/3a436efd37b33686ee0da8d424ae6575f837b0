@@ -1,0 +1,34 @@
+docs/ARCHITECTURE.md
+  s_a7553d23a94897::t_7657324fc574cb 5-6
+docs/adr/0003-evidence-backed-deterministic-email-generation.md
+  s_a7553d23a94897::t_102503758e070d 1-11
+README.md
+  s_a7553d23a94897::t_c67b42731ba40f 35
+docs/adr/0002-sqlite-single-host-job-queue.md
+  s_a7553d23a94897::t_609b844603a481 1-11
+docs/adr/README.md
+  s_a7553d23a94897::t_c98f1d7f1711e2 3-8
+  s_a7553d23a94897::t_c93417906ddb10 1-2,9-10
+docs/adr/0004-slack-review-and-explicit-gmail-send.md
+  s_a7553d23a94897::t_01dd65c599dc3a 1-11
+docs/adr/0001-provider-adapters-and-seeded-demo.md
+  s_a7553d23a94897::t_a183deaa9a0aae 1-11
+docs/README.md
+  s_a7553d23a94897::t_653a2973dbb3b4 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "c53a436efd37b33686ee0da8d424ae6575f837b0",
+  "prompts": {},
+  "sessions": {
+    "s_a7553d23a94897": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "019fb9be-c851-7c98-bf78-5862013cf419",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    }
+  }
+}
