@@ -1,8 +1,9 @@
 import { getEnv } from "@/src/env";
-import type { GongAdapter } from "./contract";
-import { GongHttpClient } from "./client";
-import { SeededGongAdapter } from "./mock";
-import { RealGongAdapter } from "./real";
+import { assertProviderMode } from "@/src/runtime/policy";
+import { GongHttpClient } from "@/src/integrations/gong/client";
+import type { GongAdapter } from "@/src/integrations/gong/contract";
+import { SeededGongAdapter } from "@/src/integrations/gong/mock";
+import { RealGongAdapter } from "@/src/integrations/gong/real";
 
 const demos = new Map<string, SeededGongAdapter>();
 export function createGongAdapter(
@@ -16,8 +17,7 @@ export function createGongAdapter(
   },
 ): GongAdapter {
   const env = getEnv();
-  if (env.DEMO_MODE && mode !== "demo")
-    throw new Error("Real provider access is disabled while DEMO_MODE=true");
+  assertProviderMode("gong", mode, env.APP_MODE);
   if (mode === "demo") {
     const key = `${configured?.key ?? "default"}:${configured?.failMode ?? "ok"}`;
     let adapter = demos.get(key);

@@ -13,7 +13,9 @@ import {
   upsertInstallation,
   upsertSeller,
 } from "@/src/db/repositories";
+import { attachSeededGong } from "@/src/demo/seed";
 import { ensureSetup } from "@/src/jobs/setup";
+import { allowsRealOAuth, isEvaluationMode } from "@/src/runtime/policy";
 
 const responseSchema = z.object({
   ok: z.literal(true),
@@ -34,8 +36,14 @@ function cookieValue(request: Request, name: string): string | undefined {
 export async function GET(request: Request) {
   ensureSetup();
   const env = getEnv();
-  if (env.DEMO_MODE) return new Response("Real OAuth is disabled in demo mode", { status: 403 });
-  const url = new URL(request.url);
+  if (!allowsRealOAuth(env.APP_MODE))
+    return new Response("Real OAuth is disabled in demo mode", { status: 403 });
+  let url: URL;
+  try {
+    url = new URL(request.url);
+  } catch {
+    return new Response("Invalid callback URL", { status: 400 });
+  }
   const state = url.searchParams.get("state") ?? "";
   const cookie = cookieValue(request, "oauth_state");
   if (!cookie || cookie !== state) return new Response("OAuth state mismatch", { status: 403 });
@@ -92,6 +100,7 @@ export async function GET(request: Request) {
     accessTokenEncrypted: encryptSecret(parsed.access_token, env.MASTER_KEY),
     scopes: "chat:write im:write users:read users:read.email",
   });
+  if (isEvaluationMode(env.APP_MODE)) attachSeededGong(seller.id);
   const response = NextResponse.redirect(new URL(verified.returnTo, request.url));
   response.cookies.set("session", createSession(seller.id, env.SESSION_SECRET), {
     httpOnly: true,

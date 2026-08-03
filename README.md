@@ -35,11 +35,17 @@ Gong poller -> SQLite job queue -> call/context/transcript
 
 See the [documentation index](docs/README.md), [architecture guide](docs/ARCHITECTURE.md), and [architecture decision records](docs/adr/README.md) for state machines, trust boundaries, and the trade-offs behind the system. Adapters are defined for transcript source, generation, draft destination, and email sender. Demo and real implementations use the same normalized contracts; real failures never fall back to demo data.
 
+## End-to-end evaluation without Gong
+
+To test real OpenRouter, Slack, and Gmail without a Gong account, use `APP_MODE=evaluation`. CallCraft attaches the existing synthetic Gong fixtures to the seller created by Slack OAuth while keeping every downstream provider real. Follow the complete [local Cloudflare Tunnel evaluation runbook](docs/EVALUATION.md). The seeded recipient uses a reserved example domain, so Send remains blocked until you use Slack **Edit** to replace To/Cc with evaluator-owned addresses.
+
+The runtime policy is intentionally strict: `demo` permits only local/seeded adapters, `evaluation` permits only seeded Gong plus real OpenRouter/Slack/Gmail, and `production` permits only real adapters. Provider failures never trigger fallback.
+
 ## Real provider setup
 
 ### Gong
 
-A Gong technical administrator creates an Access Key/Secret and supplies the tenant-specific API base URL. Set `DEMO_MODE=false`, authenticate the seller through Slack, then enter the Gong base URL and credentials in Settings. CallCraft fetches `GET /v2/users` server-side so the seller can select the correct active Gong identity; changing that selection later does not require re-entering secrets. Provider secrets are AES-256-GCM encrypted per installation; environment Gong/OpenRouter values remain optional operator fallbacks. The connector uses:
+A Gong technical administrator creates an Access Key/Secret and supplies the tenant-specific API base URL. Set `APP_MODE=production`, authenticate the seller through Slack, then enter the Gong base URL and credentials in Settings. CallCraft fetches `GET /v2/users` server-side so the seller can select the correct active Gong identity; changing that selection later does not require re-entering secrets. Provider secrets are AES-256-GCM encrypted per installation; environment Gong/OpenRouter values remain optional operator fallbacks. The connector uses:
 
 - `GET /v2/users`
 - `GET /v2/calls`
@@ -70,7 +76,7 @@ Public deployments using Gmail scopes generally need Google OAuth consent-screen
 
 ## Configuration and privacy
 
-Copy `.env.example`. Production requires strong random `MASTER_KEY` and `SESSION_SECRET`; rotating the master key requires re-encrypting credentials or reconnecting providers. Raw transcript retention defaults to seven days and can be set to a bounded day count or **after Slack delivery**. The latter removes raw segments on the next cleanup run immediately after a call reaches `delivered`, without applying the day cutoff. Cleanup retains minimal call, revision, and send-audit metadata. SQLite backups may retain deleted pages; use encrypted volumes, a suitable backup expiry, and SQLite `VACUUM` policies where hard deletion is required.
+Copy `.env.example`. Select exactly one `APP_MODE`: `demo`, `evaluation`, or `production`. The legacy `DEMO_MODE` variable is accepted only when `APP_MODE` is absent and should be removed when migrating. Production and evaluation require strong random `MASTER_KEY` and `SESSION_SECRET`; rotating the master key requires re-encrypting credentials or reconnecting providers. Raw transcript retention defaults to seven days and can be set to a bounded day count or **after Slack delivery**. The latter removes raw segments on the next cleanup run immediately after a call reaches `delivered`, without applying the day cutoff. Cleanup retains minimal call, revision, and send-audit metadata. SQLite backups may retain deleted pages; use encrypted volumes, a suitable backup expiry, and SQLite `VACUUM` policies where hard deletion is required.
 
 Logs are structured and redact tokens, secrets, email/recipient values, transcripts, Gong context, and email bodies. The database still contains sensitive working data: secure the host and volume, use TLS at the reverse proxy, and restrict operator access. Do not send customer data to models without organizational approval and applicable consent.
 
@@ -100,7 +106,7 @@ The public site at [callcraft-oss.vercel.app](https://callcraft-oss.vercel.app) 
 
 ```bash
 cp .env.example .env
-# Replace production secrets; keep DEMO_MODE=true for the safe walkthrough.
+# Replace production secrets; keep APP_MODE=demo for the safe walkthrough.
 docker compose up --build
 ```
 

@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import { google } from "googleapis";
 import { getEnv } from "@/src/env";
 import { newOAuthState, signState } from "@/src/security/signing";
+import { allowsRealOAuth } from "@/src/runtime/policy";
 import { sellerIdFromRequest } from "@/src/web/auth";
 export function GET(request: Request) {
   const env = getEnv();
-  if (env.DEMO_MODE)
+  if (!allowsRealOAuth(env.APP_MODE))
     return NextResponse.redirect(
       new URL("/settings?error=real_oauth_disabled_in_demo", request.url),
     );

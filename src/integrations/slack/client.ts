@@ -10,6 +10,7 @@ export interface SlackDeliveryInput {
   sellerSlackUserId: string;
   title: string;
   gongUrl: string;
+  synthetic?: boolean;
   context: GongContext | null;
   summary: CallSummary;
   draft: EmailDraft;
@@ -21,7 +22,7 @@ export interface SlackDeliveryResult {
   channelId: string;
   messageTs: string;
 }
-export interface SlackDraftDestination {
+interface SlackDraftDestination {
   deliver(input: SlackDeliveryInput): Promise<SlackDeliveryResult>;
 }
 

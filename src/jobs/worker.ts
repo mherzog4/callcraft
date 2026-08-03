@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { hasReservedExampleRecipients } from "@/src/domain/email-safety";
 import { callSummarySchema, emailDraftSchema, preferencesSchema } from "@/src/domain/schemas";
 import { getEnv } from "@/src/env";
 import { createGongAdapter } from "@/src/integrations/gong";
@@ -10,6 +11,7 @@ import { GmailSender, PreviewEmailSender } from "@/src/integrations/email";
 import { EmailSendError } from "@/src/integrations/email/types";
 import { decryptSecret } from "@/src/security/crypto";
 import { logger } from "@/src/security/logger";
+import { assertProviderMode } from "@/src/runtime/policy";
 import {
   claimJob,
   completeJob,
@@ -50,12 +52,21 @@ import {
 
 class PendingTranscriptError extends Error {}
 
+function parseJson(value: string, label: string): unknown {
+  try {
+    return JSON.parse(value);
+  } catch (error) {
+    throw new Error(`${label} is malformed`, { cause: error });
+  }
+}
+
 function readEncryptedConfig(installationId: string): Record<string, string> {
   const credential = getCredential(installationId);
   if (!credential?.secretEncrypted) return {};
-  const value = JSON.parse(
+  const value = parseJson(
     decryptSecret(credential.secretEncrypted, getEnv().MASTER_KEY),
-  ) as unknown;
+    "Provider credential",
+  );
   if (!value || typeof value !== "object") throw new Error("Provider credential is malformed");
   return Object.fromEntries(
     Object.entries(value).filter(
@@ -66,7 +77,7 @@ function readEncryptedConfig(installationId: string): Record<string, string> {
 
 function gongForInstallation(installation: NonNullable<ReturnType<typeof getInstallationById>>) {
   const config = readEncryptedConfig(installation.id);
-  const metadata = JSON.parse(installation.metadataJson) as {
+  const metadata = parseJson(installation.metadataJson, "Gong installation metadata") as {
     failMode?: "rate_limit" | "provider";
   };
   return createGongAdapter(installation.mode, {
@@ -82,7 +93,9 @@ function generatorForSeller(sellerId: string) {
   const installation = getInstallation(sellerId, "openrouter");
   if (!installation) throw new Error("OpenRouter installation missing");
   const config = readEncryptedConfig(installation.id);
-  const metadata = JSON.parse(installation.metadataJson) as { model?: string };
+  const metadata = parseJson(installation.metadataJson, "OpenRouter installation metadata") as {
+    model?: string;
+  };
   return createGenerator(installation.mode, {
     ...(config.apiKey ? { apiKey: config.apiKey } : {}),
     ...(metadata.model ? { modelId: metadata.model } : {}),
@@ -112,7 +125,10 @@ export function recordEmailSendFailure(intentId: string, error: unknown): EmailS
     updateInstallation(googleInstallation.id, {
       status: "error",
       metadataJson: JSON.stringify({
-        ...JSON.parse(googleInstallation.metadataJson),
+        ...(parseJson(googleInstallation.metadataJson, "Google installation metadata") as Record<
+          string,
+          unknown
+        >),
         reconnectRequired: true,
         lastError: "gmail_auth",
       }),
@@ -266,9 +282,9 @@ async function processJob(type: string, payload: Payload): Promise<void> {
       affiliation: p.affiliation as "Internal" | "External" | "Unknown",
     }));
     const result = await generatorForSeller(call.sellerId).compose({
-      summary: callSummarySchema.parse(JSON.parse(summaryRow.summaryJson)),
+      summary: callSummarySchema.parse(parseJson(summaryRow.summaryJson, "Call summary")),
       participants: parties,
-      preferences: preferencesSchema.parse(JSON.parse(seller.preferencesJson)),
+      preferences: preferencesSchema.parse(parseJson(seller.preferencesJson, "Seller preferences")),
       callTitle: call.title,
     });
     const draft = saveDraft(
@@ -304,8 +320,11 @@ async function processJob(type: string, payload: Payload): Promise<void> {
     const installation = getInstallation(seller.id, "slack");
     if (!installation || installation.status !== "connected")
       throw new Error("Slack installation missing or disconnected");
-    if (getEnv().DEMO_MODE && installation.mode !== "demo")
-      throw new Error("Real Slack access is disabled in demo mode");
+    assertProviderMode("slack", installation.mode);
+    const gongInstallation = getInstallationById(call.installationId);
+    if (!gongInstallation || gongInstallation.sellerId !== seller.id)
+      throw new Error("Gong installation missing or tenant mismatch");
+    assertProviderMode("gong", gongInstallation.mode);
     const existing = getSlackDelivery(row.id) ?? getLatestSlackDeliveryForCall(call.id);
     let destination;
     if (installation.mode === "demo") destination = new PreviewSlackDestination();
@@ -316,24 +335,28 @@ async function processJob(type: string, payload: Payload): Promise<void> {
         decryptSecret(credential.accessTokenEncrypted, getEnv().MASTER_KEY),
       );
     }
+    const draft = emailDraftSchema.parse({
+      to: parseJson(row.toJson, "Draft recipients"),
+      cc: parseJson(row.ccJson, "Draft Cc recipients"),
+      subject: row.subject,
+      body: row.body,
+    });
     const result = await destination.deliver({
       callId: call.id,
       draftId: row.id,
       sellerSlackUserId: seller.slackUserId ?? installation.externalAccountId ?? "",
       title: call.title,
       gongUrl: call.gongUrl,
+      synthetic: gongInstallation.mode === "demo",
       context: getGongContext(call.id),
-      summary: callSummarySchema.parse(JSON.parse(summaryRow.summaryJson)),
-      draft: emailDraftSchema.parse({
-        to: JSON.parse(row.toJson),
-        cc: JSON.parse(row.ccJson),
-        subject: row.subject,
-        body: row.body,
-      }),
+      summary: callSummarySchema.parse(parseJson(summaryRow.summaryJson, "Call summary")),
+      draft,
       ...(payload.deliveryStatus ? { status: payload.deliveryStatus } : {}),
-      allowSend: !["submitted", "submitting", "unknown", "failed"].includes(
-        getSendIntentForDraft(row.id)?.status ?? "",
-      ),
+      allowSend:
+        !hasReservedExampleRecipients(draft) &&
+        !["submitted", "submitting", "unknown", "failed"].includes(
+          getSendIntentForDraft(row.id)?.status ?? "",
+        ),
       ...(existing?.channelId && existing.messageTs
         ? { previous: { channelId: existing.channelId, messageTs: existing.messageTs } }
         : {}),
@@ -362,11 +385,10 @@ async function processJob(type: string, payload: Payload): Promise<void> {
     const googleInstallation = getInstallation(intent.sellerId, "google");
     if (!googleInstallation || googleInstallation.status !== "connected")
       throw new EmailSendError("Connected Gmail account required", "auth", false);
-    if (getEnv().DEMO_MODE && googleInstallation.mode !== "demo")
-      throw new EmailSendError("Real Gmail access is disabled in demo mode", "auth", false);
+    assertProviderMode("google", googleInstallation.mode);
     const draft = emailDraftSchema.parse({
-      to: JSON.parse(intent.toJson),
-      cc: JSON.parse(intent.ccJson),
+      to: parseJson(intent.toJson, "Send intent recipients"),
+      cc: parseJson(intent.ccJson, "Send intent Cc recipients"),
       subject: intent.subjectSnapshot,
       body: intent.bodySnapshot,
     });
@@ -413,7 +435,9 @@ async function processJob(type: string, payload: Payload): Promise<void> {
   }
   if (type === "cleanup") {
     const seller = payload.sellerId ? getSeller(payload.sellerId) : undefined;
-    const preferences = seller ? preferencesSchema.parse(JSON.parse(seller.preferencesJson)) : null;
+    const preferences = seller
+      ? preferencesSchema.parse(parseJson(seller.preferencesJson, "Seller preferences"))
+      : null;
     const days = preferences?.retentionDays ?? getEnv().TRANSCRIPT_RETENTION_DAYS;
     const afterDelivery = preferences?.retentionMode === "after_delivery";
     purgeTranscriptData(
@@ -430,7 +454,7 @@ export async function runWorkerOnce(workerId = `worker-${randomUUID()}`): Promis
   const job = claimJob(workerId);
   if (!job) return false;
   try {
-    await processJob(job.type, JSON.parse(job.payloadJson) as Payload);
+    await processJob(job.type, parseJson(job.payloadJson, "Job payload") as Payload);
     completeJob(job.id);
     return true;
   } catch (error) {
@@ -449,7 +473,7 @@ export async function runWorkerOnce(workerId = `worker-${randomUUID()}`): Promis
         : error instanceof GongError
           ? error.retryAfterMs
           : undefined;
-    const payload = JSON.parse(job.payloadJson) as Payload;
+    const payload = parseJson(job.payloadJson, "Job payload") as Payload;
     const nonRetryable =
       (error instanceof EmailSendError && !error.retryable) ||
       (error instanceof GenerationError && !error.retryable) ||
@@ -514,12 +538,16 @@ export function queueConfirmedSend(input: {
     throw new Error("Draft missing or tenant mismatch");
   const google = getInstallation(input.sellerId, "google");
   if (!google || google.status !== "connected") throw new Error("Connected Gmail account required");
+  assertProviderMode("google", google.mode);
   const draft = emailDraftSchema.parse({
-    to: JSON.parse(row.toJson),
-    cc: JSON.parse(row.ccJson),
+    to: parseJson(row.toJson, "Draft recipients"),
+    cc: parseJson(row.ccJson, "Draft Cc recipients"),
     subject: row.subject,
     body: row.body,
   });
+  if (google.mode === "real" && hasReservedExampleRecipients(draft)) {
+    throw new Error("Replace reserved example-domain recipients before sending");
+  }
   const intent = createSendIntent({
     draftRevisionId: row.id,
     sellerId: input.sellerId,
@@ -537,9 +565,11 @@ export function scheduleRecurringJobs(at = new Date()): number {
   let count = 0;
   const fiveMinuteBucket = Math.floor(at.getTime() / (5 * 60_000));
   const dayBucket = at.toISOString().slice(0, 10);
-  for (const installation of listGongInstallations().filter(
-    (item) => item.status === "connected",
-  )) {
+  for (const installation of listGongInstallations()) {
+    if (installation.status !== "connected") continue;
+    const generation = getInstallation(installation.sellerId, "openrouter");
+    const slack = getInstallation(installation.sellerId, "slack");
+    if (generation?.status !== "connected" || slack?.status !== "connected") continue;
     enqueueJob("discover_calls", `discover:${installation.id}:${fiveMinuteBucket}`, {
       sellerId: installation.sellerId,
       installationId: installation.id,

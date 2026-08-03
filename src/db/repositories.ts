@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { and, asc, desc, eq, inArray, lt, lte, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, lt, lte, sql } from "drizzle-orm";
 import type {
   CallSummary,
   EmailDraft,
@@ -10,7 +10,13 @@ import type {
   CallState,
   JobType,
 } from "@/src/domain/schemas";
-import { callStateSchema, jobTypeSchema, preferencesSchema } from "@/src/domain/schemas";
+import {
+  callStateSchema,
+  gongContextSchema,
+  jobTypeSchema,
+  preferencesSchema,
+} from "@/src/domain/schemas";
+import { assertProviderMode } from "@/src/runtime/policy";
 import { getDatabase } from "./client";
 import {
   calls,
@@ -30,6 +36,13 @@ import {
 } from "./schema";
 
 const now = () => new Date();
+function parseStoredJson(value: string): unknown {
+  try {
+    return JSON.parse(value);
+  } catch (error) {
+    throw new Error("Stored JSON is invalid", { cause: error });
+  }
+}
 export type Db = ReturnType<typeof getDatabase>["db"];
 
 export function upsertSeller(input: {
@@ -59,6 +72,7 @@ export function upsertInstallation(input: {
   externalAccountId?: string;
   metadata?: unknown;
 }) {
+  assertProviderMode(input.provider, input.mode);
   const db = getDatabase().db;
   const existing = db
     .select()
@@ -149,6 +163,9 @@ export function listInstallations(sellerId: string) {
     .from(installations)
     .where(eq(installations.sellerId, sellerId))
     .all();
+}
+export function listAllInstallations() {
+  return getDatabase().db.select().from(installations).all();
 }
 export function getInstallation(
   sellerId: string,
@@ -375,13 +392,13 @@ export function getGongContext(callId: string): GongContext | null {
     .where(eq(gongAnalyses.callId, callId))
     .get();
   return row
-    ? {
+    ? gongContextSchema.parse({
         brief: row.brief,
-        outline: JSON.parse(row.outlineJson) as string[],
-        highlights: JSON.parse(row.highlightsJson) as string[],
+        outline: parseStoredJson(row.outlineJson),
+        highlights: parseStoredJson(row.highlightsJson),
         outcome: row.outcome,
-        keyPoints: JSON.parse(row.keyPointsJson) as string[],
-      }
+        keyPoints: parseStoredJson(row.keyPointsJson),
+      })
     : null;
 }
 
@@ -830,15 +847,43 @@ export function purgeTranscriptData(
   return db.delete(transcriptSegments).where(inArray(transcriptSegments.callId, oldCallIds)).run()
     .changes;
 }
+export function resetSyntheticData(sellerId: string): void {
+  const { sqlite } = getDatabase();
+  sqlite.transaction(() => {
+    sqlite
+      .prepare(
+        "DELETE FROM jobs WHERE json_extract(payload_json, '$.sellerId') = ? OR json_extract(payload_json, '$.callId') IN (SELECT id FROM calls WHERE seller_id = ?)",
+      )
+      .run(sellerId, sellerId);
+    sqlite.prepare("DELETE FROM email_send_intents WHERE seller_id = ?").run(sellerId);
+    sqlite
+      .prepare(
+        "DELETE FROM slack_deliveries WHERE draft_revision_id IN (SELECT id FROM draft_revisions WHERE call_id IN (SELECT id FROM calls WHERE seller_id = ?))",
+      )
+      .run(sellerId);
+    sqlite
+      .prepare(
+        "DELETE FROM draft_revisions WHERE call_id IN (SELECT id FROM calls WHERE seller_id = ?)",
+      )
+      .run(sellerId);
+    sqlite
+      .prepare(
+        "DELETE FROM evidences WHERE summary_id IN (SELECT id FROM summaries WHERE call_id IN (SELECT id FROM calls WHERE seller_id = ?))",
+      )
+      .run(sellerId);
+    sqlite
+      .prepare("DELETE FROM summaries WHERE call_id IN (SELECT id FROM calls WHERE seller_id = ?)")
+      .run(sellerId);
+    sqlite.prepare("DELETE FROM calls WHERE seller_id = ?").run(sellerId);
+    sqlite
+      .prepare(
+        "DELETE FROM sync_cursors WHERE installation_id IN (SELECT id FROM installations WHERE seller_id = ? AND provider = 'gong' AND mode = 'demo')",
+      )
+      .run(sellerId);
+  })();
+}
+
 export function resetDemoData(sellerId: string): void {
-  const { db } = getDatabase();
-  db.delete(jobs)
-    .where(
-      or(
-        sql`json_extract(${jobs.payloadJson}, '$.sellerId') = ${sellerId}`,
-        sql`json_extract(${jobs.payloadJson}, '$.callId') IN (SELECT id FROM calls WHERE seller_id = ${sellerId})`,
-      ),
-    )
-    .run();
-  db.delete(sellers).where(eq(sellers.id, sellerId)).run();
+  resetSyntheticData(sellerId);
+  getDatabase().db.delete(sellers).where(eq(sellers.id, sellerId)).run();
 }

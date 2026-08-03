@@ -1,17 +1,29 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { callSummarySchema, emailDraftSchema } from "@/src/domain/schemas";
 import { ensureSetup } from "@/src/jobs/setup";
 import {
   getCallForSeller,
   getGongContext,
+  getInstallationById,
   getSegments,
   latestDraft,
   latestSummary,
 } from "@/src/db/repositories";
 import { currentSellerId } from "@/src/web/auth";
 import { getEnv } from "@/src/env";
+import { isDemoMode } from "@/src/runtime/policy";
 
 export const dynamic = "force-dynamic";
+
+function parseJson(value: string, label: string): unknown {
+  try {
+    return JSON.parse(value);
+  } catch (error) {
+    throw new Error(`${label} is malformed`, { cause: error });
+  }
+}
+
 export default async function CallPage({ params }: { params: Promise<{ id: string }> }) {
   ensureSetup();
   const sellerId = await currentSellerId();
@@ -19,13 +31,17 @@ export default async function CallPage({ params }: { params: Promise<{ id: strin
   const call = getCallForSeller(id, sellerId);
   if (!call) notFound();
   const context = getGongContext(id);
+  const gongInstallation = getInstallationById(call.installationId);
+  const synthetic = gongInstallation?.mode === "demo";
   const summaryRow = latestSummary(id);
-  const summary = summaryRow ? callSummarySchema.parse(JSON.parse(summaryRow.summaryJson)) : null;
+  const summary = summaryRow
+    ? callSummarySchema.parse(parseJson(summaryRow.summaryJson, "Call summary"))
+    : null;
   const row = latestDraft(id);
   const draft = row
     ? emailDraftSchema.parse({
-        to: JSON.parse(row.toJson),
-        cc: JSON.parse(row.ccJson),
+        to: parseJson(row.toJson, "Draft recipients"),
+        cc: parseJson(row.ccJson, "Draft Cc recipients"),
         subject: row.subject,
         body: row.body,
       })
@@ -34,15 +50,20 @@ export default async function CallPage({ params }: { params: Promise<{ id: strin
   return (
     <main>
       <section className="hero">
-        <div className="eyebrow">{call.state.replaceAll("_", " ")}</div>
+        <div className="eyebrow">
+          {synthetic ? "Synthetic Gong fixture · " : ""}
+          {call.state.replaceAll("_", " ")}
+        </div>
         <h1>{call.title}</h1>
         <p>
           {call.startedAt.toLocaleString()} · {Math.round(call.durationSeconds / 60)} minutes
         </p>
         <div className="actions">
-          <a className="button secondary" href={call.gongUrl} target="_blank" rel="noreferrer">
-            Open in Gong ↗
-          </a>
+          {!synthetic && (
+            <Link className="button secondary" href={call.gongUrl} target="_blank" rel="noreferrer">
+              Open in Gong ↗
+            </Link>
+          )}
           <form action="/api/generate" method="post">
             <input type="hidden" name="callId" value={call.id} />
             <button>Regenerate</button>
@@ -51,7 +72,7 @@ export default async function CallPage({ params }: { params: Promise<{ id: strin
       </section>
       <section className="grid">
         <div className="card">
-          <h2>Gong context</h2>
+          <h2>{synthetic ? "Seeded Gong context — synthetic data" : "Gong context"}</h2>
           <p>{context?.brief ?? "Gong analysis is not available."}</p>
           {context?.outcome && (
             <p>
@@ -80,7 +101,7 @@ export default async function CallPage({ params }: { params: Promise<{ id: strin
                 Sending is available only from the private Slack review, where the exact sender, To,
                 Cc, subject, and full body are confirmed.
               </p>
-              {getEnv().DEMO_MODE && (
+              {isDemoMode(getEnv().APP_MODE) && (
                 <form action="/api/send" method="post">
                   <input type="hidden" name="draftId" value={row!.id} />
                   <button>Simulate confirmed send (local preview only)</button>

@@ -4,8 +4,21 @@ import { getInstallation, getSeller, listInstallations, listJobs } from "@/src/d
 import { currentSellerId } from "@/src/web/auth";
 import { preferencesSchema } from "@/src/domain/schemas";
 import { listGongUsersForSeller } from "@/src/integrations/gong/service";
+import { allowsRealOAuth, isDemoMode, isEvaluationMode } from "@/src/runtime/policy";
 
 export const dynamic = "force-dynamic";
+
+function parseMetadata(value: string): Record<string, unknown> {
+  try {
+    const parsed = JSON.parse(value) as unknown;
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+      ? (parsed as Record<string, unknown>)
+      : {};
+  } catch {
+    return {};
+  }
+}
+
 export default async function SettingsPage() {
   ensureSetup();
   const sellerId = await currentSellerId();
@@ -13,14 +26,15 @@ export default async function SettingsPage() {
   const installs = listInstallations(seller.id);
   const jobs = listJobs(50, seller.id);
   const env = getEnv();
-  const preferences = preferencesSchema.parse(JSON.parse(seller.preferencesJson));
+  const appMode = env.APP_MODE;
+  const preferences = preferencesSchema.parse(parseMetadata(seller.preferencesJson));
   const openrouter = getInstallation(seller.id, "openrouter");
   const openrouterModel = openrouter
-    ? ((JSON.parse(openrouter.metadataJson) as { model?: string }).model ?? env.OPENROUTER_MODEL)
+    ? ((parseMetadata(openrouter.metadataJson) as { model?: string }).model ?? env.OPENROUTER_MODEL)
     : env.OPENROUTER_MODEL;
   let gongUsers: Awaited<ReturnType<typeof listGongUsersForSeller>> = [];
   let gongUsersError = "";
-  if (!env.DEMO_MODE && getInstallation(seller.id, "gong")) {
+  if (appMode === "production" && getInstallation(seller.id, "gong")) {
     try {
       gongUsers = await listGongUsersForSeller(seller.id);
     } catch {
@@ -33,8 +47,11 @@ export default async function SettingsPage() {
         <div className="eyebrow">First-run setup</div>
         <h1>Connect the seller workflow.</h1>
         <p>
-          Demo mode is credential-free. Real mode keeps provider credentials server-side and
-          encrypted at rest.
+          {isDemoMode(appMode)
+            ? "Demo mode is credential-free and fully local."
+            : isEvaluationMode(appMode)
+              ? "Evaluation mode uses synthetic Gong data with real OpenRouter, Slack, and Gmail."
+              : "Production mode keeps real provider credentials server-side and encrypted at rest."}
         </p>
       </section>
       <section className="grid">
@@ -87,7 +104,17 @@ export default async function SettingsPage() {
                 defaultValue={preferences.retentionDays}
               />
             </label>
-            {!env.DEMO_MODE && (
+            {isEvaluationMode(appMode) && (
+              <>
+                <hr />
+                <h3>Seeded Gong — synthetic data</h3>
+                <p className="muted">
+                  No Gong account is required. Calls, participants, context, and transcripts are
+                  synthetic fixtures and are labeled throughout the review flow.
+                </p>
+              </>
+            )}
+            {appMode === "production" && (
               <>
                 <hr />
                 <h3>Gong API</h3>
@@ -125,27 +152,37 @@ export default async function SettingsPage() {
                   )}
                 </label>
                 {gongUsersError && <p className="error">{gongUsersError}</p>}
+              </>
+            )}
+            {!isDemoMode(appMode) && (
+              <>
+                {isEvaluationMode(appMode) && <hr />}
                 <h3>OpenRouter</h3>
                 <label>
-                  API key
+                  API key {openrouter ? "(leave blank to keep the saved key)" : "(required)"}
                   <input name="openrouterApiKey" type="password" autoComplete="new-password" />
                 </label>
                 <label>
                   Model
-                  <input name="openrouterModel" defaultValue={openrouterModel} />
+                  <input name="openrouterModel" defaultValue={openrouterModel} required />
                 </label>
               </>
             )}
-            <button>{env.DEMO_MODE ? "Save preferences" : "Save encrypted setup"}</button>
+            <button>{isDemoMode(appMode) ? "Save preferences" : "Save encrypted setup"}</button>
           </form>
         </div>
         <div className="card">
           <h2>Integration health</h2>
           {installs.map((i) => {
-            const metadata = JSON.parse(i.metadataJson) as { reconnectRequired?: boolean };
+            const metadata = parseMetadata(i.metadataJson) as {
+              reconnectRequired?: boolean;
+              synthetic?: boolean;
+            };
             return (
               <div className="row" key={i.id}>
-                <span>{i.provider}</span>
+                <span>
+                  {i.provider === "gong" && metadata.synthetic ? "Gong (synthetic)" : i.provider}
+                </span>
                 <span className="status">
                   <span className="dot" />
                   {i.mode} · {metadata.reconnectRequired ? "reconnect required" : i.status}
@@ -154,14 +191,14 @@ export default async function SettingsPage() {
             );
           })}
           <div className="actions">
-            {!env.DEMO_MODE && (
+            {allowsRealOAuth(appMode) && (
               <>
-                <a className="button secondary" href="/api/slack/oauth/start">
-                  Connect Slack
-                </a>
-                <a className="button secondary" href="/api/google/oauth/start">
-                  Connect Gmail
-                </a>
+                <form action="/api/slack/oauth/start" method="get">
+                  <button className="secondary">Connect Slack</button>
+                </form>
+                <form action="/api/google/oauth/start" method="get">
+                  <button className="secondary">Connect Gmail</button>
+                </form>
               </>
             )}
           </div>
@@ -176,9 +213,14 @@ export default async function SettingsPage() {
               </span>
             </div>
           ))}
-          {env.DEMO_MODE && (
+          {(isDemoMode(appMode) || isEvaluationMode(appMode)) && (
             <form action="/api/demo/reset" method="post">
-              <button className="danger">Reset seeded demo</button>
+              <button className="danger">
+                {isEvaluationMode(appMode) ? "Reset synthetic calls" : "Reset seeded demo"}
+              </button>
+              {isEvaluationMode(appMode) && (
+                <p className="muted">Slack and Gmail connections will remain connected.</p>
+              )}
             </form>
           )}
         </div>

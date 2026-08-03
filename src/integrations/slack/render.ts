@@ -1,3 +1,4 @@
+import { hasReservedExampleRecipients } from "@/src/domain/email-safety";
 import type { CallSummary, EmailDraft, GongContext, TranscriptSegment } from "@/src/domain/schemas";
 
 function bullets(items: string[]): string {
@@ -15,13 +16,18 @@ export function renderDraftBlocks(input: {
   draftId: string;
   title: string;
   gongUrl: string;
+  synthetic?: boolean;
   context: GongContext | null;
   summary: CallSummary;
   draft: EmailDraft;
   status?: string;
   allowSend?: boolean;
 }) {
-  const contextLabel = input.context?.brief ? "Gong context" : "Generated context";
+  const contextLabel = input.synthetic
+    ? "Seeded Gong context — synthetic data"
+    : input.context?.brief
+      ? "Gong context"
+      : "Generated context";
   const contextText =
     input.context?.brief ??
     [...input.summary.pains, ...input.summary.decisions, ...input.summary.nextSteps]
@@ -30,6 +36,7 @@ export function renderDraftBlocks(input: {
   const details = input.context
     ? ([input.context.outcome, ...input.context.keyPoints].filter(Boolean) as string[])
     : input.summary.nextSteps;
+  const hasReservedRecipients = hasReservedExampleRecipients(input.draft);
   const actions: Record<string, unknown>[] = [
     {
       type: "button",
@@ -49,14 +56,16 @@ export function renderDraftBlocks(input: {
       text: { type: "plain_text", text: "View context" },
       value: input.callId,
     },
-    {
+  ];
+  if (!input.synthetic) {
+    actions.push({
       type: "button",
       action_id: "open_gong",
       text: { type: "plain_text", text: "Open in Gong" },
       url: input.gongUrl,
-    },
-  ];
-  if (input.allowSend !== false) {
+    });
+  }
+  if (input.allowSend !== false && !hasReservedRecipients) {
     actions.push({
       type: "button",
       style: "primary",
@@ -68,7 +77,10 @@ export function renderDraftBlocks(input: {
   return [
     {
       type: "header",
-      text: { type: "plain_text", text: `Follow-up: ${input.title}`.slice(0, 150) },
+      text: {
+        type: "plain_text",
+        text: `${input.synthetic ? "SYNTHETIC · " : ""}Follow-up: ${input.title}`.slice(0, 150),
+      },
     },
     {
       type: "section",
@@ -78,6 +90,17 @@ export function renderDraftBlocks(input: {
       },
     },
     { type: "divider" },
+    ...(hasReservedRecipients
+      ? [
+          {
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: ":warning: *Reserved example recipient.* Use *Edit* to replace To/Cc with an address you own before Send email is enabled.",
+            },
+          },
+        ]
+      : []),
     {
       type: "section",
       text: {
@@ -93,7 +116,7 @@ export function renderDraftBlocks(input: {
       elements: [
         {
           type: "mrkdwn",
-          text: `Status: *${input.status ?? "Ready for review"}* · Email is never sent automatically.`,
+          text: `${input.synthetic ? "Synthetic call fixture · " : ""}Status: *${input.status ?? "Ready for review"}* · Email is never sent automatically.`,
         },
       ],
     },
@@ -111,12 +134,13 @@ export function sendConfirmationModal(draftId: string, sender: string, draft: Em
     close: { type: "plain_text", text: "Cancel" },
     blocks: [
       ...[
-        ["From", sender],
-        ["To", draft.to.join(", ")],
-        ["Cc", draft.cc.join(", ") || "None"],
-        ["Subject", draft.subject],
-      ].map(([label, value]) => ({
+        { label: "From", value: sender, blockId: "confirm_from" },
+        { label: "To", value: draft.to.join(", "), blockId: "confirm_to" },
+        { label: "Cc", value: draft.cc.join(", ") || "None", blockId: "confirm_cc" },
+        { label: "Subject", value: draft.subject, blockId: "confirm_subject" },
+      ].map(({ label, value, blockId }) => ({
         type: "section",
+        block_id: blockId,
         text: { type: "plain_text", text: `${label}\n${value}` },
       })),
       { type: "divider" },
