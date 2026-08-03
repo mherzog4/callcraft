@@ -1,7 +1,7 @@
 import type { CallSummary, EmailDraft } from "@/src/domain/schemas";
 import { assertEvidence } from "@/src/domain/schemas";
-import type { GenerationResult, Generator } from "./types";
-import { renderGroundedDraft } from "./grounded";
+import { renderGroundedDraft } from "@/src/integrations/openrouter/grounded";
+import type { GenerationResult, Generator } from "@/src/integrations/openrouter/types";
 
 export class DemoGenerator implements Generator {
   async extract(
@@ -49,9 +49,9 @@ export class DemoGenerator implements Generator {
     };
   }
   async compose(input: Parameters<Generator["compose"]>[0]): Promise<GenerationResult<EmailDraft>> {
-    const external = input.participants
-      .filter((party) => party.affiliation === "External" && party.email)
-      .map((party) => party.email!);
+    const external = input.participants.flatMap((party) =>
+      party.affiliation === "External" && party.email ? [party.email] : [],
+    );
     const value = renderGroundedDraft({
       ...input,
       plan: {

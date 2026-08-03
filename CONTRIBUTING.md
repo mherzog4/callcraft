@@ -8,4 +8,6 @@
 
 Provider calls are mocked in CI. Do not add required real-provider tests or expose captured customer payloads. New destinations and senders should implement the existing adapter interfaces. Schema changes require a Drizzle migration and migration test.
 
+Applied AI behavior changes should add or update a synthetic scenario in `src/evals/scenarios.ts`, preserve the deterministic `npm run eval` baseline, and document intentional dataset-version changes. Live OpenRouter and embedding runs are optional, budgeted, and must never be required by CI. Do not weaken citation, recipient, forbidden-content, or draft-grounding gates to make a model pass.
+
 By contributing, you agree that your contribution is licensed under MIT.

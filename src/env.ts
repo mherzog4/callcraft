@@ -10,6 +10,7 @@ const rawEnvSchema = z
     MASTER_KEY: z.string().min(32).default("development-only-master-key-change-me"),
     SESSION_SECRET: z.string().min(32).default("development-only-session-secret-change"),
     OPENROUTER_API_KEY: z.string().optional(),
+    OPENROUTER_BASE_URL: z.string().url().default("https://openrouter.ai/api/v1"),
     OPENROUTER_MODEL: z.string().default("openai/gpt-4.1-mini"),
     SLACK_CLIENT_ID: z.string().optional(),
     SLACK_CLIENT_SECRET: z.string().optional(),

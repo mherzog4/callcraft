@@ -1,9 +1,9 @@
 {
-  "name": "gong-follow-up",
+  "name": "callcraft",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Production-minded Gong-to-Slack follow-up email assistant",
+  "description": "Production-minded transcript-to-follow-up Applied AI reference implementation",
   "license": "MIT",
   "packageManager": "npm@10.9.2",
   "engines": {
@@ -18,6 +18,13 @@
     "db:migrate": "tsx --env-file=.env scripts/migrate.ts",
     "db:seed": "tsx --env-file=.env scripts/seed.ts",
     "demo:reset": "tsx --env-file=.env scripts/reset-demo.ts",
+    "evaluation:setup": "tsx scripts/setup-evaluation.ts",
+    "evaluation:doctor": "tsx --env-file=.env scripts/evaluation-doctor.ts",
+    "evaluation:start": "tsx --env-file=.env scripts/start-evaluation.ts",
+    "acceptance:verify": "tsx --env-file=.env scripts/verify-live-acceptance.ts",
+    "eval": "tsx scripts/eval.ts",
+    "eval:live": "tsx --env-file=.env scripts/eval.ts --live",
+    "eval:retrieval": "tsx --env-file=.env scripts/retrieval-eval.ts",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
@@ -25,7 +32,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "check": "npm run format:check && npm run lint && npm run typecheck && npm run test:marketing && npm test && npm run build",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run test:marketing && npm run eval && npm test && npm run build",
     "test:marketing": "html-validate marketing/index.html"
   },
   "dependencies": {
@@ -38,6 +45,7 @@
     "pino": "^9.9.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "sqlite-vec": "^0.1.7-alpha.2",
     "zod": "^3.25.76"
   },
   "devDependencies": {

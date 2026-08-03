@@ -24,14 +24,17 @@ describe("OpenRouter adapter", () => {
       .mockResolvedValueOnce(
         new Response(
           JSON.stringify({
+            id: "generation-123",
+            provider: "Test Provider",
             choices: [{ message: { content: JSON.stringify(good) } }],
-            usage: { total_tokens: 5 },
+            usage: { total_tokens: 5, cost: 0.001 },
           }),
           { status: 200 },
         ),
       );
     const generator = new OpenRouterGenerator({
       apiKey: "test",
+      baseUrl: "https://openrouter.example/api/v1",
       modelId: "test/model",
       fetch: fake,
     });
@@ -41,10 +44,12 @@ describe("OpenRouter adapter", () => {
       context: demoContext,
     });
     expect(result.value).toEqual(good);
+    expect(result).toMatchObject({
+      requestId: "generation-123",
+      provider: "Test Provider",
+      usage: { totalTokens: 5, cost: 0.001, repairAttempts: 1 },
+    });
     expect(fake).toHaveBeenCalledTimes(2);
-    const request = JSON.parse(String(fake.mock.calls[0]![1]!.body)) as {
-      messages: Array<{ content: string }>;
-    };
-    expect(request.messages[1]!.content).toContain("BEGIN_UNTRUSTED_DATA");
+    expect(String(fake.mock.calls[0]![1]!.body)).toContain("BEGIN_UNTRUSTED_DATA");
   });
 });

@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "CallCraft",
-  description: "Grounded Gong follow-ups delivered and sent from Slack",
+  description: "Applied AI reference implementation for grounded transcript follow-ups",
 };
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -18,14 +18,22 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <nav>
               <Link href="/">Calls</Link>
               <Link href="/drafts">Drafts</Link>
+              <Link href="/evals">Evals</Link>
               <Link href="/settings">Settings</Link>
-              <a href="https://github.com" target="_blank" rel="noreferrer">
+              <Link
+                href="https://github.com/mherzog4/callcraft/tree/main/docs"
+                target="_blank"
+                rel="noreferrer"
+              >
                 Docs ↗
-              </a>
+              </Link>
             </nav>
           </header>
           {children}
-          <footer>Open-source · Privacy-first · Email is never sent without confirmation</footer>
+          <footer>
+            MIT-licensed reference implementation · Synthetic Gong evaluation available · Email is
+            never sent without confirmation
+          </footer>
         </div>
       </body>
     </html>

@@ -51,7 +51,13 @@ OAuth redirect URIs are exact string matches. A stale hostname will cause OAuth 
 
 ## 3. Generate local secrets and configure `.env`
 
-Generate separate strong values:
+The setup helper can copy/update `.env`, select evaluation mode, set the tunnel origin, and generate strong secrets without printing them:
+
+```bash
+npm run evaluation:setup -- --app-url https://YOUR-CURRENT-HOST.trycloudflare.com
+```
+
+Alternatively, generate separate strong values manually:
 
 ```bash
 openssl rand -base64 48
@@ -66,6 +72,7 @@ APP_URL=https://YOUR-CURRENT-HOST.trycloudflare.com
 DATABASE_PATH=./data/evaluation.db
 MASTER_KEY=PASTE_FIRST_RANDOM_VALUE
 SESSION_SECRET=PASTE_SECOND_RANDOM_VALUE
+OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
 OPENROUTER_MODEL=openai/gpt-4.1-mini
 OPENROUTER_API_KEY=
 SLACK_CLIENT_ID=
@@ -77,7 +84,7 @@ TRANSCRIPT_RETENTION_DAYS=7
 LOG_LEVEL=info
 ```
 
-Do not combine `APP_MODE` with the deprecated `DEMO_MODE` variable. Keep the same `MASTER_KEY` while credentials are connected; changing it makes stored credentials undecryptable and requires reconnecting providers.
+Do not combine `APP_MODE` with the deprecated `DEMO_MODE` variable. Keep the same `MASTER_KEY` while credentials are connected; changing it makes stored credentials undecryptable and requires reconnecting providers. After adding provider credentials, run `npm run evaluation:doctor` to validate the local configuration and print the exact callback URLs.
 
 ## 4. Create an OpenRouter API key
 
@@ -119,24 +126,13 @@ Testing mode avoids public verification for explicitly listed test users. Google
 
 ## 7. Start CallCraft
 
-After all callback URLs and `.env` values use the same tunnel hostname:
+After all callback URLs and `.env` values use the same tunnel hostname, build, migrate, and start the production web process plus durable worker:
 
 ```bash
-npm run db:migrate
+npm run evaluation:start
 ```
 
-Build once, then start the web process in terminal 2:
-
-```bash
-npm run build
-npm start
-```
-
-Using the production server makes secure OAuth session cookies and tunnel behavior match the intended deployment. Rebuild after changing application code. In terminal 3, start the durable worker:
-
-```bash
-npm run worker -- --watch
-```
+This keeps both processes in one terminal and stops both on Ctrl+C. For separate process supervision, run `npm run db:migrate`, `npm run build && npm start`, and `npm run worker -- --watch` independently.
 
 Open the **HTTPS Quick Tunnel URL**, not `http://localhost:3000`. The worker and web process use the same `DATABASE_PATH` and encryption key from `.env`.
 
@@ -165,6 +161,13 @@ The worker discovers the fixtures only after Slack and OpenRouter setup are read
    - Slack changes to **Submitted via Gmail**; and
    - CallCraft does not claim delivery or read status.
 8. Repeat the confirmation action if possible and verify no second message is submitted.
+9. Verify the persisted acceptance invariants:
+
+   ```bash
+   npm run acceptance:verify
+   ```
+
+10. Optionally run the OpenRouter model comparison from [`EVALS.md`](./EVALS.md), then open `/evals`.
 
 If the worker loses the network after Gmail may have accepted a submission, CallCraft marks the outcome **unknown** and will not retry automatically. Reconcile that state manually in Gmail.
 

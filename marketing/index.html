@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#08100d" />
     <meta
       name="description"
-      content="CallCraft turns Gong transcripts into evidence-backed follow-up emails, delivers them in Slack, and sends only after seller approval. Open source and self-hostable."
+      content="CallCraft is an MIT-licensed Applied AI reference implementation for evidence-backed transcript follow-ups, Slack review, explicit Gmail send, and model evals."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://callcraft-oss.vercel.app/" />
@@ -76,8 +76,9 @@
           <div class="eyebrow"><span></span> Open-Source Follow-Up Copilot</div>
           <h1 id="hero-title">The follow-up writes itself. <em>You still press send.</em></h1>
           <p class="hero-lede">
-            CallCraft turns completed Gong calls into evidence-backed emails, brings every draft to
-            Slack, and sends through Gmail only after the seller approves it.
+            CallCraft is a production-minded Applied AI reference implementation that turns
+            completed Gong-shaped calls into evidence-backed emails, brings every draft to Slack,
+            and sends through Gmail only after the seller approves it.
           </p>
           <div class="hero-actions">
             <a
@@ -405,6 +406,14 @@
             </p>
           </details>
           <details>
+            <summary>Can I test real OpenRouter, Slack, and Gmail without Gong?</summary>
+            <p>
+              Yes. Evaluation mode uses seeded Gong-compatible transcripts with real downstream
+              providers, then reports grounding, recipient accuracy, latency, tokens, and cost. The
+              real Gong adapter is contract-tested but not represented as live-tenant verified.
+            </p>
+          </details>
+          <details>
             <summary>Where does CallCraft store transcript data?</summary>
             <p>
               The default self-hosted deployment uses SQLite on your host. Retention is
@@ -427,7 +436,7 @@
         <div class="cta-grid" aria-hidden="true"></div>
         <div class="eyebrow"><span></span> Open Source on GitHub</div>
         <h2 id="cta-title">Ship the follow-up before the context goes cold.</h2>
-        <p>Run the seeded demo in 5 minutes. Connect real providers when you’re ready.</p>
+        <p>Run the seeded demo, compare OpenRouter models, or connect evaluator-owned providers.</p>
         <div class="hero-actions centered">
           <a
             class="button button-primary"

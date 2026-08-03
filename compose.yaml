@@ -4,10 +4,24 @@ services:
     env_file: .env
     environment:
       DATABASE_PATH: /data/app.db
+      EVAL_REPORT_DIRECTORY: /data/evals
     ports:
       - "3000:3000"
     volumes:
       - callcraft-data:/data
+    init: true
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
     restart: unless-stopped
   worker:
     build: .
@@ -15,10 +29,13 @@ services:
     env_file: .env
     environment:
       DATABASE_PATH: /data/app.db
+      EVAL_REPORT_DIRECTORY: /data/evals
     volumes:
       - callcraft-data:/data
+    init: true
     restart: unless-stopped
     depends_on:
-      - web
+      web:
+        condition: service_healthy
 volumes:
   callcraft-data:

@@ -122,5 +122,17 @@ describe("grounded generation", () => {
         demoParties,
       ),
     ).toThrow(/recipient/);
+    expect(() =>
+      assertDraftGrounding(
+        {
+          to: ["jordan.lee@example.org"],
+          cc: ["attacker@example.net"],
+          subject: "Next steps",
+          body: "Safe body",
+        },
+        summary,
+        demoParties,
+      ),
+    ).toThrow(/To\/Cc recipient/);
   });
 });

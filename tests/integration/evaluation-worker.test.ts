@@ -41,6 +41,7 @@ vi.mock("@/src/integrations/email", () => ({
 }));
 
 import { attachSeededGong } from "@/src/demo/seed";
+import { verifyLiveAcceptance } from "@/src/evals/acceptance";
 import { closeDatabase, getDatabase } from "@/src/db/client";
 import {
   enqueueJob,
@@ -174,6 +175,7 @@ describe("evaluation worker provider mix", () => {
       status: "submitted",
       gmailMessageId: "gmail-message-1",
     });
+    expect(verifyLiveAcceptance()).toMatchObject({ passed: true });
   });
 
   it("records a real generation failure instead of using preview generation", async () => {

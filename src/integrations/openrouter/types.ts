@@ -11,6 +11,8 @@ export interface GenerationResult<T> {
   value: T;
   usage: Record<string, number>;
   modelId: string;
+  requestId?: string;
+  provider?: string;
 }
 export interface Generator {
   extract(input: {
