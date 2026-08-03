@@ -6,7 +6,7 @@ import type { Generator } from "@/src/integrations/openrouter/types";
 
 export function createGenerator(
   mode: "demo" | "real",
-  configured?: { apiKey?: string; modelId?: string },
+  configured?: { apiKey?: string; baseUrl?: string; modelId?: string },
 ): Generator {
   const env = getEnv();
   assertProviderMode("openrouter", mode, env.APP_MODE);
@@ -15,6 +15,7 @@ export function createGenerator(
   if (!apiKey) throw new Error("Real generation requires an OpenRouter API key");
   return new OpenRouterGenerator({
     apiKey,
+    baseUrl: configured?.baseUrl ?? env.OPENROUTER_BASE_URL,
     modelId: configured?.modelId ?? env.OPENROUTER_MODEL,
   });
 }

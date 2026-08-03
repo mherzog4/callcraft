@@ -9,19 +9,26 @@ import {
   type SellerPreferences,
   type TranscriptSegment,
 } from "@/src/domain/schemas";
-import type { GenerationResult, Generator } from "./types";
-import { GenerationError } from "./types";
-import { groundedDraftPlanSchema, renderGroundedDraft } from "./grounded";
+import {
+  groundedDraftPlanSchema,
+  renderGroundedDraft,
+} from "@/src/integrations/openrouter/grounded";
+import type { GenerationResult, Generator } from "@/src/integrations/openrouter/types";
+import { GenerationError } from "@/src/integrations/openrouter/types";
 
 const responseSchema = z
   .object({
+    id: z.string().optional(),
+    provider: z.string().nullable().optional(),
     choices: z.array(z.object({ message: z.object({ content: z.string() }) })).min(1),
     usage: z
       .object({
         prompt_tokens: z.number().optional(),
         completion_tokens: z.number().optional(),
         total_tokens: z.number().optional(),
+        cost: z.number().nullable().optional(),
       })
+      .passthrough()
       .optional(),
   })
   .passthrough();
@@ -35,17 +42,35 @@ function transcriptData(segments: TranscriptSegment[]) {
     text,
   }));
 }
-function cleanUsage(usage: z.infer<typeof responseSchema>["usage"]): Record<string, number> {
+function cleanUsage(
+  usage: z.infer<typeof responseSchema>["usage"],
+  repairAttempts: number,
+): Record<string, number> {
   return {
     promptTokens: usage?.prompt_tokens ?? 0,
     completionTokens: usage?.completion_tokens ?? 0,
     totalTokens: usage?.total_tokens ?? 0,
+    cost: usage?.cost ?? 0,
+    repairAttempts,
   };
+}
+
+function parseModelJson(value: string): unknown {
+  try {
+    return JSON.parse(value);
+  } catch (error) {
+    throw new Error("OpenRouter response content was not valid JSON", { cause: error });
+  }
 }
 
 export class OpenRouterGenerator implements Generator {
   constructor(
-    private readonly options: { apiKey: string; modelId: string; fetch?: typeof fetch },
+    private readonly options: {
+      apiKey: string;
+      baseUrl: string;
+      modelId: string;
+      fetch?: typeof fetch;
+    },
   ) {}
   private async request<T>(
     messages: Array<{ role: "system" | "user"; content: string }>,
@@ -56,13 +81,13 @@ export class OpenRouterGenerator implements Generator {
       let response: Response;
       try {
         response = await (this.options.fetch ?? fetch)(
-          "https://openrouter.ai/api/v1/chat/completions",
+          `${this.options.baseUrl.replace(/\/$/, "")}/chat/completions`,
           {
             method: "POST",
             headers: {
               authorization: `Bearer ${this.options.apiKey}`,
               "content-type": "application/json",
-              "x-title": "Gong Follow-up OSS",
+              "x-title": "CallCraft Applied AI Reference Demo",
             },
             body: JSON.stringify({
               model: this.options.modelId,
@@ -100,9 +125,17 @@ export class OpenRouterGenerator implements Generator {
           response.status >= 500,
         );
       const parsed = responseSchema.parse(await response.json());
+      const choice = parsed.choices[0];
+      if (!choice) throw new GenerationError("OpenRouter returned no choices", "provider", true);
       try {
-        const value = schema.parse(JSON.parse(parsed.choices[0]!.message.content));
-        return { value, usage: cleanUsage(parsed.usage), modelId: this.options.modelId };
+        const value = schema.parse(parseModelJson(choice.message.content));
+        return {
+          value,
+          usage: cleanUsage(parsed.usage, attempt),
+          modelId: this.options.modelId,
+          ...(parsed.id ? { requestId: parsed.id } : {}),
+          ...(parsed.provider ? { provider: parsed.provider } : {}),
+        };
       } catch {
         if (attempt === 1)
           throw new GenerationError(

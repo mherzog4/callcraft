@@ -27,6 +27,14 @@ import { recordEmailSendFailure, runWorkerOnce, runWorkerUntilIdle } from "@/src
 import { EmailSendError } from "@/src/integrations/email/types";
 import { demoCalls } from "@/src/integrations/gong/fixtures";
 
+function parseJson(value: string): unknown {
+  try {
+    return JSON.parse(value);
+  } catch (error) {
+    throw new Error("Test fixture JSON is malformed", { cause: error });
+  }
+}
+
 beforeEach(async () => {
   closeDatabase();
   process.env.DATABASE_PATH = path.join(
@@ -103,8 +111,8 @@ describe("automatic worker recovery", () => {
       sellerId: "demo-seller",
       sender: "alex@example.org",
       draft: {
-        to: JSON.parse(draft.toJson),
-        cc: JSON.parse(draft.ccJson),
+        to: parseJson(draft.toJson) as string[],
+        cc: parseJson(draft.ccJson) as string[],
         subject: draft.subject,
         body: draft.body,
       },
@@ -113,7 +121,7 @@ describe("automatic worker recovery", () => {
     expect(getSendIntent(failed.id)?.status).toBe("failed");
     const refreshedGoogle = getInstallation("demo-seller", "google")!;
     expect(refreshedGoogle.status).toBe("error");
-    expect(JSON.parse(refreshedGoogle.metadataJson)).toMatchObject({ reconnectRequired: true });
+    expect(parseJson(refreshedGoogle.metadataJson)).toMatchObject({ reconnectRequired: true });
 
     const summary = saveSummary(
       draft.callId,

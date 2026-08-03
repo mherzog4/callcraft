@@ -26,6 +26,12 @@ Evaluation and production modes require a signed, expiring seller session. Dashb
 
 Gong transcript and analysis content are untrusted input. It is delimited, never interpolated as instructions, and structured output is schema validated. Material extracted facts include transcript segment evidence. Composition does not accept free-form model prose: the model selects exact evidence-backed summary claims, then deterministic application templates render the subject and body. Unsupported claim selections and novel high-risk literals such as dates, times, percentages, URLs, and prices are rejected. Secrets are AES-256-GCM encrypted with an application master key. Logs omit transcripts, Gong context, recipient addresses, email bodies, and tokens.
 
+## Applied AI evaluation boundary
+
+The production workflow and eval harness share canonical transcript, participant, summary, draft, and grounding schemas, but eval execution is not part of the durable seller job queue. A versioned synthetic scenario set supports a deterministic no-network baseline and opt-in live OpenRouter model comparison. Reports record scenario metrics, latency, usage/cost metadata, repair attempts, and generation IDs under gitignored local storage; the authenticated `/evals` page reads the latest report or a checked-in synthetic sample.
+
+Deterministic citation, evidence, recipient, forbidden-content, and draft-grounding checks are release gates. Subjective LLM-as-judge scoring is intentionally not a required gate. The optional OpenRouter embeddings plus `sqlite-vec` path runs in an isolated evaluation database and reports evidence recall versus context reduction. It cannot change the default full-transcript generation path without a later architecture decision.
+
 ## SQLite boundary
 
 SQLite runs with WAL, foreign keys, and a busy timeout. Job claims and state transitions are short transactions. This supports one web host and a small number of local worker processes. Multi-host/serverless deployments must move the Drizzle repository to PostgreSQL and a distributed queue; business logic does not issue SQLite SQL directly.

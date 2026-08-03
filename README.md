@@ -1,6 +1,6 @@
 # CallCraft
 
-CallCraft is an open-source, production-minded prototype for individual sellers. It watches completed Gong calls, waits for the transcript, extracts an evidence-backed summary through OpenRouter, composes a follow-up, and sends it privately to Slack. The seller can inspect Gong context and transcript evidence, edit/regenerate, then explicitly confirm a Gmail send. Email is **never sent automatically**.
+CallCraft is an MIT-licensed, production-minded reference implementation and live Applied AI demo for individual sellers. It watches completed Gong-shaped calls, waits for the transcript, extracts an evidence-backed summary through OpenRouter, composes a follow-up, and sends it privately to Slack. The seller can inspect Gong context and transcript evidence, edit/regenerate, then explicitly confirm a Gmail send. Email is **never sent automatically**.
 
 [![Marketing site](https://img.shields.io/badge/site-callcraft--oss.vercel.app-b8f66d)](https://callcraft-oss.vercel.app)
 ![MIT](https://img.shields.io/badge/license-MIT-green)
@@ -40,6 +40,24 @@ See the [documentation index](docs/README.md), [architecture guide](docs/ARCHITE
 To test real OpenRouter, Slack, and Gmail without a Gong account, use `APP_MODE=evaluation`. CallCraft attaches the existing synthetic Gong fixtures to the seller created by Slack OAuth while keeping every downstream provider real. Follow the complete [local Cloudflare Tunnel evaluation runbook](docs/EVALUATION.md). The seeded recipient uses a reserved example domain, so Send remains blocked until you use Slack **Edit** to replace To/Cc with evaluator-owned addresses.
 
 The runtime policy is intentionally strict: `demo` permits only local/seeded adapters, `evaluation` permits only seeded Gong plus real OpenRouter/Slack/Gmail, and `production` permits only real adapters. Provider failures never trigger fallback.
+
+The maintainer does not have a Gong tenant, so the real Gong connector is implemented and contract-tested but not represented as live-tenant verified. The seeded adapter exercises the same ingestion and normalized SQLite boundary used downstream.
+
+## Applied AI evals
+
+Run the credential-free golden baseline and open `/evals`:
+
+```bash
+npm run eval
+```
+
+For opt-in OpenRouter model comparison:
+
+```bash
+npm run eval:live -- --models openai/gpt-4.1-mini anthropic/claude-sonnet-4
+```
+
+The versioned synthetic dataset measures citation validity, evidence and concept recall, recipient accuracy, unsupported content, draft grounding, latency, tokens, repair attempts, and OpenRouter-reported cost. An optional `npm run eval:retrieval` experiment uses OpenRouter embeddings with `sqlite-vec`, but vector retrieval does not alter the safer full-transcript default. See [Applied AI evals](docs/EVALS.md).
 
 ## Real provider setup
 
@@ -90,13 +108,18 @@ SQLite uses WAL, foreign keys, a 5-second busy timeout, short transactions, uniq
 npm run format:check
 npm run lint
 npm run typecheck
+npm run eval
+npm run eval:live -- --models openai/gpt-4.1-mini
+npm run eval:retrieval
+npm run evaluation:doctor
+npm run acceptance:verify
 npm test
 npm run test:e2e
 npm run build
 npm run check
 ```
 
-Default CI mocks all providers. Real-provider smoke tests must be separate, opt-in, and secret-gated.
+Default CI mocks all providers and runs the deterministic no-network eval baseline. Live OpenRouter evals, embeddings, Slack/Gmail acceptance, and real-provider smoke tests are opt-in and secret-gated.
 
 ## Marketing site
 

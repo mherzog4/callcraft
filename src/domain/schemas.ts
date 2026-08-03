@@ -137,13 +137,13 @@ export function assertDraftGrounding(
   allowedUserText: string[] = [],
 ): void {
   const allowed = new Set(
-    participants
-      .filter((party) => party.affiliation === "External" && party.email)
-      .map((party) => party.email!.toLowerCase()),
+    participants.flatMap((party) =>
+      party.affiliation === "External" && party.email ? [party.email.toLowerCase()] : [],
+    ),
   );
-  if (draft.to.some((address) => !allowed.has(address.toLowerCase()))) {
+  if ([...draft.to, ...draft.cc].some((address) => !allowed.has(address.toLowerCase()))) {
     throw new Error(
-      "Generated draft contains a recipient not present in external call participants",
+      "Generated draft contains a To/Cc recipient not present in external call participants",
     );
   }
   const source = [JSON.stringify(summary), JSON.stringify(participants), ...allowedUserText]

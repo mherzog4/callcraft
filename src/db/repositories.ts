@@ -17,7 +17,7 @@ import {
   preferencesSchema,
 } from "@/src/domain/schemas";
 import { assertProviderMode } from "@/src/runtime/policy";
-import { getDatabase } from "./client";
+import { getDatabase } from "@/src/db/client";
 import {
   calls,
   draftRevisions,
@@ -33,7 +33,7 @@ import {
   summaries,
   syncCursors,
   transcriptSegments,
-} from "./schema";
+} from "@/src/db/schema";
 
 const now = () => new Date();
 function parseStoredJson(value: string): unknown {
@@ -43,7 +43,6 @@ function parseStoredJson(value: string): unknown {
     throw new Error("Stored JSON is invalid", { cause: error });
   }
 }
-export type Db = ReturnType<typeof getDatabase>["db"];
 
 export function upsertSeller(input: {
   id?: string;
@@ -129,6 +128,9 @@ export function saveCredential(input: {
       .run();
 }
 
+export function listSellers() {
+  return getDatabase().db.select().from(sellers).all();
+}
 export function getSeller(id: string) {
   return getDatabase().db.select().from(sellers).where(eq(sellers.id, id)).get();
 }
@@ -584,6 +586,14 @@ export function createSendIntent(input: {
     .from(emailSendIntents)
     .where(eq(emailSendIntents.draftRevisionId, input.draftRevisionId))
     .get()!;
+}
+export function listSendIntents(sellerId: string) {
+  return getDatabase()
+    .db.select()
+    .from(emailSendIntents)
+    .where(eq(emailSendIntents.sellerId, sellerId))
+    .orderBy(desc(emailSendIntents.createdAt))
+    .all();
 }
 export function getSendIntent(id: string) {
   return getDatabase().db.select().from(emailSendIntents).where(eq(emailSendIntents.id, id)).get();
