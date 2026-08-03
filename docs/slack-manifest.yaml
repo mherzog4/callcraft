@@ -1,0 +1,26 @@
+display_information:
+  name: CallCraft
+  description: Review grounded Gong follow-ups and explicitly send through Gmail
+features:
+  bot_user:
+    display_name: CallCraft
+    always_online: false
+  app_home:
+    messages_tab_enabled: true
+    messages_tab_read_only_enabled: false
+oauth_config:
+  redirect_urls:
+    - https://YOUR_HOST/api/slack/oauth/callback
+  scopes:
+    bot:
+      - chat:write
+      - im:write
+      - users:read
+      - users:read.email
+settings:
+  interactivity:
+    is_enabled: true
+    request_url: https://YOUR_HOST/api/slack/interactions
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false

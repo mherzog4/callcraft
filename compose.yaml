@@ -1,0 +1,24 @@
+services:
+  web:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_PATH: /data/app.db
+    ports:
+      - "3000:3000"
+    volumes:
+      - callcraft-data:/data
+    restart: unless-stopped
+  worker:
+    build: .
+    command: ["./node_modules/.bin/tsx", "scripts/worker.ts", "--watch"]
+    env_file: .env
+    environment:
+      DATABASE_PATH: /data/app.db
+    volumes:
+      - callcraft-data:/data
+    restart: unless-stopped
+    depends_on:
+      - web
+volumes:
+  callcraft-data:

@@ -1,0 +1,15 @@
+node_modules/
+.next/
+.env
+.env.local
+data/
+coverage/
+playwright-report/
+test-results/
+.pi-subagents/
+.opencode/
+*.log
+*.db
+*.db-shm
+*.db-wal
+*.tsbuildinfo
