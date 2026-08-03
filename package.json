@@ -25,7 +25,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "check": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build"
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run test:marketing && npm test && npm run build",
+    "test:marketing": "html-validate marketing/index.html"
   },
   "dependencies": {
     "@slack/web-api": "^7.12.0",
@@ -49,6 +50,7 @@
     "drizzle-kit": "^0.31.10",
     "eslint": "^9.36.0",
     "eslint-config-next": "^16.2.12",
+    "html-validate": "^9.7.1",
     "prettier": "^3.6.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.2",

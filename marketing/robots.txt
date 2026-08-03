@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://callcraft-oss.vercel.app/sitemap.xml

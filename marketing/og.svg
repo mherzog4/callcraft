@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="translate(925 40) rotate(120) scale(520 620)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#356044" stop-opacity=".65"/>
+      <stop offset="1" stop-color="#08100D" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#F4F7EF" stroke-opacity=".07"/>
+    </pattern>
+    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#D8FFAC"/>
+      <stop offset="1" stop-color="#63C891"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#08100D"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect x="650" width="550" height="630" fill="url(#grid)"/>
+  <g transform="translate(72 68)">
+    <rect width="56" height="56" rx="15" fill="url(#mark)"/>
+    <text x="28" y="39" text-anchor="middle" fill="#102117" font-family="Georgia,serif" font-size="34" font-weight="700">C</text>
+    <text x="75" y="38" fill="#F4F7EF" font-family="Arial,sans-serif" font-size="29" font-weight="700">CallCraft</text>
+  </g>
+  <text x="72" y="260" fill="#F4F7EF" font-family="Arial,sans-serif" font-size="72" font-weight="700" letter-spacing="-3">The follow-up</text>
+  <text x="72" y="338" fill="#F4F7EF" font-family="Arial,sans-serif" font-size="72" font-weight="700" letter-spacing="-3">writes itself.</text>
+  <text x="72" y="416" fill="#B8F66D" font-family="Georgia,serif" font-size="69" font-style="italic" letter-spacing="-2">You still press send.</text>
+  <text x="72" y="500" fill="#B8C2B9" font-family="Arial,sans-serif" font-size="25">Evidence-backed Gong follow-ups, reviewed in Slack.</text>
+  <g transform="translate(810 175)">
+    <rect width="300" height="315" rx="24" fill="#FDFDFD" stroke="#F4F7EF" stroke-opacity=".25"/>
+    <rect width="300" height="45" rx="24" fill="#F3F3F3"/>
+    <rect y="24" width="300" height="21" fill="#F3F3F3"/>
+    <circle cx="24" cy="22" r="5" fill="#FF6A63"/><circle cx="40" cy="22" r="5" fill="#F5BE4F"/><circle cx="56" cy="22" r="5" fill="#62C554"/>
+    <rect x="22" y="67" width="40" height="40" rx="10" fill="url(#mark)"/>
+    <text x="42" y="95" text-anchor="middle" fill="#102117" font-family="Georgia,serif" font-size="23" font-weight="700">C</text>
+    <text x="76" y="83" fill="#1D1C1D" font-family="Arial,sans-serif" font-size="13" font-weight="700">CallCraft</text>
+    <text x="76" y="104" fill="#1D1C1D" font-family="Arial,sans-serif" font-size="16" font-weight="700">Follow-up ready</text>
+    <rect x="76" y="120" width="202" height="70" rx="8" fill="#F5FAEF" stroke="#D7E9CD"/>
+    <text x="90" y="141" fill="#31512E" font-family="Arial,sans-serif" font-size="9" font-weight="700">GONG CONTEXT</text>
+    <rect x="90" y="152" width="170" height="6" rx="3" fill="#A8B8AA"/>
+    <rect x="90" y="165" width="130" height="6" rx="3" fill="#C0CCC1"/>
+    <rect x="76" y="204" width="202" height="66" rx="8" fill="#FAFAFA" stroke="#DDDDDD"/>
+    <rect x="90" y="220" width="164" height="6" rx="3" fill="#B5B5B5"/>
+    <rect x="90" y="235" width="142" height="6" rx="3" fill="#D0D0D0"/>
+    <rect x="90" y="250" width="178" height="6" rx="3" fill="#D0D0D0"/>
+    <rect x="171" y="282" width="107" height="23" rx="6" fill="#237443"/>
+    <text x="224" y="298" text-anchor="middle" fill="white" font-family="Arial,sans-serif" font-size="10" font-weight="700">Send via Gmail</text>
+  </g>
+</svg>
