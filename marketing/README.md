@@ -3,7 +3,7 @@
 The public marketing site is a dependency-free static site deployed separately from the stateful CallCraft application.
 
 - Production: <https://callcraft-oss.vercel.app>
-- Vercel project: `mherzog4s-projects/callcraft`
+- Vercel project: `mherzog4s-projects/callcraft-oss`
 - Project root: `marketing/`
 
 ## Local preview
