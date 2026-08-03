@@ -6,10 +6,17 @@ import { readSession } from "@/src/security/session";
 import { encryptSecret } from "@/src/security/crypto";
 import { saveCredential, upsertInstallation } from "@/src/db/repositories";
 import { getSeller } from "@/src/db/repositories";
+import { allowsRealOAuth } from "@/src/runtime/policy";
 export async function GET(request: Request) {
   const env = getEnv();
-  if (env.DEMO_MODE) return new Response("Real OAuth is disabled in demo mode", { status: 403 });
-  const url = new URL(request.url);
+  if (!allowsRealOAuth(env.APP_MODE))
+    return new Response("Real OAuth is disabled in demo mode", { status: 403 });
+  let url: URL;
+  try {
+    url = new URL(request.url);
+  } catch {
+    return new Response("Invalid callback URL", { status: 400 });
+  }
   const state = url.searchParams.get("state") ?? "";
   const cookie = request.headers.get("cookie")?.match(/(?:^|; )oauth_state=([^;]+)/)?.[1];
   if (!cookie || cookie !== state) return new Response("OAuth state mismatch", { status: 403 });

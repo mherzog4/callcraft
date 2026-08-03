@@ -1,3 +1,5 @@
+# Replace YOUR_HOST with the current public hostname. Quick Tunnel hostnames change;
+# update both endpoints and restart CallCraft whenever APP_URL changes.
 display_information:
   name: CallCraft
   description: Review grounded Gong follow-ups and explicitly send through Gmail

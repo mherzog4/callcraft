@@ -9,6 +9,7 @@ import {
   sendConfirmationModal,
 } from "@/src/integrations/slack/render";
 import { decryptSecret } from "@/src/security/crypto";
+import { hasReservedExampleRecipients } from "@/src/domain/email-safety";
 import { emailDraftSchema, callSummarySchema } from "@/src/domain/schemas";
 import {
   enqueueJob,
@@ -26,6 +27,7 @@ import {
 import { queueConfirmedSend, queueRegeneration } from "@/src/jobs/worker";
 import { logger } from "@/src/security/logger";
 import { scheduleSlackOperation } from "@/src/integrations/slack/deferred";
+import { allowsRealOAuth, assertProviderMode } from "@/src/runtime/policy";
 
 const actorSchema = z.object({
   team: z.object({ id: z.string() }),
@@ -61,10 +63,18 @@ const viewPayload = actorSchema
   })
   .passthrough();
 
+function parseJson(value: string, label: string): unknown {
+  try {
+    return JSON.parse(value);
+  } catch (error) {
+    throw new Error(`${label} is malformed`, { cause: error });
+  }
+}
+
 function draftValue(row: NonNullable<ReturnType<typeof getDraftForSeller>>) {
   return emailDraftSchema.parse({
-    to: JSON.parse(row.toJson),
-    cc: JSON.parse(row.ccJson),
+    to: parseJson(row.toJson, "Draft recipients"),
+    cc: parseJson(row.ccJson, "Draft Cc recipients"),
     subject: row.subject,
     body: row.body,
   });
@@ -91,6 +101,7 @@ function actor(teamId: string, userId: string) {
   if (!seller) throw new Error("Slack actor is not linked to a seller");
   const install = getInstallation(seller.id, "slack");
   if (!install || install.status !== "connected") throw new Error("Slack installation missing");
+  assertProviderMode("slack", install.mode);
   const credential = getCredential(install.id);
   if (!credential?.accessTokenEncrypted) throw new Error("Slack bot token missing");
   return {
@@ -101,7 +112,7 @@ function actor(teamId: string, userId: string) {
 
 export async function POST(request: Request) {
   const env = getEnv();
-  if (env.DEMO_MODE)
+  if (!allowsRealOAuth(env.APP_MODE))
     return new Response("Real Slack interactions are disabled in demo mode", { status: 403 });
   if (!env.SLACK_SIGNING_SECRET)
     return new Response("Slack signing secret unavailable", { status: 503 });
@@ -115,7 +126,7 @@ export async function POST(request: Request) {
     })
   )
     return new Response("Invalid Slack signature", { status: 401 });
-  const raw = JSON.parse(new URLSearchParams(body).get("payload") ?? "{}") as unknown;
+  const raw = parseJson(new URLSearchParams(body).get("payload") ?? "{}", "Slack payload");
 
   if ((raw as { type?: string }).type === "block_actions") {
     const payload = actionPayload.parse(raw);
@@ -142,7 +153,7 @@ export async function POST(request: Request) {
         evidenceModal({
           callId: call.id,
           context: getGongContext(call.id),
-          summary: callSummarySchema.parse(JSON.parse(summaryRow.summaryJson)),
+          summary: callSummarySchema.parse(parseJson(summaryRow.summaryJson, "Call summary")),
           segments: getSegments(call.id),
         }) as unknown as Parameters<typeof current.client.views.open>[0]["view"],
       );
@@ -161,9 +172,17 @@ export async function POST(request: Request) {
       return new Response(null, { status: 200 });
     }
     if (action.action_id === "send_email") {
+      const currentDraft = draftValue(draft);
+      if (hasReservedExampleRecipients(currentDraft)) {
+        return Response.json(
+          { text: "Edit To/Cc and replace reserved example-domain recipients before sending" },
+          { status: 409 },
+        );
+      }
       const google = getInstallation(current.seller.id, "google");
       if (!google || google.status !== "connected" || google.mode !== "real")
         return Response.json({ text: "Connect Gmail before sending" }, { status: 409 });
+      assertProviderMode("google", google.mode);
       const prior = getSendIntentForDraft(draft.id);
       if (prior?.status === "submitted")
         return Response.json(
@@ -180,7 +199,7 @@ export async function POST(request: Request) {
       openViewAfterAck(
         current.client,
         payload.trigger_id,
-        sendConfirmationModal(draft.id, sender, draftValue(draft)) as unknown as Parameters<
+        sendConfirmationModal(draft.id, sender, currentDraft) as unknown as Parameters<
           typeof current.client.views.open
         >[0]["view"],
       );
@@ -194,7 +213,7 @@ export async function POST(request: Request) {
   if (payload.view.callback_id === "send_email_submit") {
     const metadata = z
       .object({ draftId: z.string(), sender: z.string().email() })
-      .parse(JSON.parse(payload.view.private_metadata));
+      .parse(parseJson(payload.view.private_metadata, "Slack confirmation metadata"));
     const draft = getDraftForSeller(metadata.draftId, current.seller.id);
     const google = getInstallation(current.seller.id, "google");
     if (
@@ -204,6 +223,12 @@ export async function POST(request: Request) {
       google.externalAccountId !== metadata.sender
     )
       return Response.json({ response_action: "errors", errors: {} }, { status: 409 });
+    if (hasReservedExampleRecipients(draftValue(draft))) {
+      return Response.json({
+        response_action: "errors",
+        errors: { confirm_to: "Replace reserved example-domain recipients before sending" },
+      });
+    }
     queueConfirmedSend({
       draftId: metadata.draftId,
       sellerId: current.seller.id,

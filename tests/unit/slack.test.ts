@@ -57,6 +57,36 @@ describe("Slack review safety", () => {
     await deferred!();
     expect(open).toHaveBeenCalledOnce();
   });
+  it("labels synthetic calls, removes the Gong deep link, and blocks reserved recipients", () => {
+    const blocks = renderDraftBlocks({
+      callId: "call-1",
+      draftId: "draft-1",
+      title: "Call",
+      gongUrl: "https://app.gong.io/call?id=1",
+      synthetic: true,
+      context: null,
+      summary,
+      draft,
+    });
+    const serialized = JSON.stringify(blocks);
+    expect(serialized).toContain("SYNTHETIC");
+    expect(serialized).toContain("Reserved example recipient");
+    expect(serialized).not.toContain('"action_id":"open_gong"');
+    expect(serialized).not.toContain('"action_id":"send_email"');
+  });
+  it("enables send after recipients are replaced with evaluator-owned addresses", () => {
+    const blocks = renderDraftBlocks({
+      callId: "call-1",
+      draftId: "draft-1",
+      title: "Call",
+      gongUrl: "https://app.gong.io/call?id=1",
+      synthetic: true,
+      context: null,
+      summary,
+      draft: { ...draft, to: ["evaluator@gmail.com"], cc: [] },
+    });
+    expect(JSON.stringify(blocks)).toContain('"action_id":"send_email"');
+  });
   it("removes the send action after a terminal or ambiguous send state", () => {
     const blocks = renderDraftBlocks({
       callId: "call-1",

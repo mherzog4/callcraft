@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { ensureSetup } from "@/src/jobs/setup";
-import { listCalls, listInstallations, listJobs } from "@/src/db/repositories";
+import { getInstallationById, listCalls, listInstallations, listJobs } from "@/src/db/repositories";
 import { getEnv } from "@/src/env";
+import { isDemoMode, isEvaluationMode } from "@/src/runtime/policy";
 import { currentSellerId } from "@/src/web/auth";
 
 export const dynamic = "force-dynamic";
@@ -12,6 +13,7 @@ export default async function Dashboard() {
   const jobs = listJobs(50, sellerId);
   const integrations = listInstallations(sellerId);
   const delivered = calls.filter((call) => call.state === "delivered").length;
+  const appMode = getEnv().APP_MODE;
   return (
     <main>
       <section className="hero">
@@ -30,10 +32,16 @@ export default async function Dashboard() {
           </Link>
         </div>
       </section>
-      {getEnv().DEMO_MODE && (
+      {isDemoMode(appMode) && (
         <div className="banner">
           Seeded demo mode is active. Slack and email are written to{" "}
           <span className="code">data/previews/</span>; real providers are disabled.
+        </div>
+      )}
+      {isEvaluationMode(appMode) && (
+        <div className="banner">
+          <strong>Evaluation mode:</strong> Gong calls and transcripts are synthetic. OpenRouter,
+          Slack, and Gmail use your connected real accounts. Send only to addresses you own.
         </div>
       )}
       <section className="grid">
@@ -55,30 +63,34 @@ export default async function Dashboard() {
           <h2>Recent calls</h2>
           <div className="list">
             {calls.length ? (
-              calls.map((call) => (
-                <div className="row" key={call.id}>
-                  <div>
-                    <strong>{call.title}</strong>
-                    <div className="muted">
-                      {call.startedAt.toLocaleString()} · {Math.round(call.durationSeconds / 60)}{" "}
-                      min
+              calls.map((call) => {
+                const synthetic = getInstallationById(call.installationId)?.mode === "demo";
+                return (
+                  <div className="row" key={call.id}>
+                    <div>
+                      <strong>{call.title}</strong>
+                      {synthetic && <div className="status">Synthetic Gong fixture</div>}
+                      <div className="muted">
+                        {call.startedAt.toLocaleString()} · {Math.round(call.durationSeconds / 60)}{" "}
+                        min
+                      </div>
+                    </div>
+                    <div className="actions">
+                      <span className="status">
+                        <span
+                          className={`dot ${call.state.includes("wait") ? "wait" : call.state === "dead_letter" ? "fail" : ""}`}
+                        />
+                        {call.state.replaceAll("_", " ")}
+                      </span>
+                      <Link className="button secondary" href={`/calls/${call.id}`}>
+                        View
+                      </Link>
                     </div>
                   </div>
-                  <div className="actions">
-                    <span className="status">
-                      <span
-                        className={`dot ${call.state.includes("wait") ? "wait" : call.state === "dead_letter" ? "fail" : ""}`}
-                      />
-                      {call.state.replaceAll("_", " ")}
-                    </span>
-                    <Link className="button secondary" href={`/calls/${call.id}`}>
-                      View
-                    </Link>
-                  </div>
-                </div>
-              ))
+                );
+              })
             ) : (
-              <p>No calls yet. Run sync to start the demo.</p>
+              <p>No calls yet. Save provider setup, then run Sync &amp; process now.</p>
             )}
           </div>
         </div>

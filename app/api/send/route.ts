@@ -2,6 +2,7 @@ import { getEnv } from "@/src/env";
 import { ensureSetup } from "@/src/jobs/setup";
 import { queueConfirmedSend } from "@/src/jobs/worker";
 import { getSeller } from "@/src/db/repositories";
+import { isDemoMode } from "@/src/runtime/policy";
 import { requireSeller } from "@/src/web/auth";
 import { requireSameOrigin, redirect } from "@/src/web/request";
 
@@ -11,7 +12,7 @@ import { requireSameOrigin, redirect } from "@/src/web/request";
 export async function POST(request: Request) {
   const denied = requireSameOrigin(request);
   if (denied) return denied;
-  if (!getEnv().DEMO_MODE)
+  if (!isDemoMode(getEnv().APP_MODE))
     return Response.json(
       { error: "Confirm email sending from the private Slack review" },
       { status: 410 },

@@ -9,6 +9,7 @@ import {
   getCredential,
   getInstallation,
   getSeller,
+  listJobs,
   saveCredential,
   upsertInstallation,
   upsertSeller,
@@ -26,6 +27,7 @@ beforeEach(async () => {
     await fs.mkdtemp(path.join(os.tmpdir(), "callcraft-setup-")),
     "test.db",
   );
+  delete process.env.APP_MODE;
   process.env.DEMO_MODE = "false";
   process.env.APP_URL = "http://localhost:3000";
   process.env.MASTER_KEY = masterKey;
@@ -37,6 +39,56 @@ beforeEach(async () => {
 afterEach(() => closeDatabase());
 
 describe("provider settings", () => {
+  it("creates only seeded Gong and real OpenRouter for an evaluation seller", async () => {
+    process.env.APP_MODE = "evaluation";
+    delete process.env.DEMO_MODE;
+    resetEnvForTests();
+    const seller = upsertSeller({ email: "evaluator@example.test", displayName: "Evaluator" });
+    upsertInstallation({
+      sellerId: seller.id,
+      provider: "slack",
+      mode: "real",
+      externalAccountId: "U-EVALUATOR",
+    });
+
+    const form = new FormData();
+    form.set("displayName", "Evaluator");
+    form.set("email", "evaluator@example.test");
+    form.set("tone", "warm");
+    form.set("length", "medium");
+    form.set("signature", "Evaluator");
+    form.set("retentionMode", "days");
+    form.set("retentionDays", "7");
+    form.set("openrouterApiKey", "evaluation-router-key");
+    form.set("openrouterModel", "openai/gpt-4.1-mini");
+    const response = await POST(
+      new Request("http://localhost:3000/api/setup", {
+        method: "POST",
+        body: form,
+        headers: {
+          origin: "http://localhost:3000",
+          cookie: `session=${createSession(seller.id, sessionSecret)}`,
+        },
+      }),
+    );
+
+    expect(response.status).toBe(303);
+    expect(getInstallation(seller.id, "gong")).toMatchObject({
+      mode: "demo",
+      status: "connected",
+      externalAccountId: "gong-user-alex",
+    });
+    expect(getInstallation(seller.id, "openrouter")).toMatchObject({
+      mode: "real",
+      status: "connected",
+    });
+    expect(
+      getCredential(getInstallation(seller.id, "openrouter")!.id)?.secretEncrypted,
+    ).toBeTruthy();
+    expect(getInstallation(seller.id, "google")).toBeUndefined();
+    expect(listJobs(10, seller.id)).toHaveLength(0);
+  });
+
   it("updates selected Gong identity and OpenRouter model without resupplying secrets", async () => {
     const seller = upsertSeller({
       email: "seller@example.org",
@@ -97,9 +149,7 @@ describe("provider settings", () => {
     expect(response.status).toBe(303);
     expect(getSeller(seller.id)?.gongUserId).toBe("selected-user");
     expect(getInstallation(seller.id, "gong")?.externalAccountId).toBe("selected-user");
-    expect(JSON.parse(getInstallation(seller.id, "openrouter")!.metadataJson)).toMatchObject({
-      model: "new/model",
-    });
+    expect(getInstallation(seller.id, "openrouter")!.metadataJson).toContain('"model":"new/model"');
     expect(getCredential(gong.id)?.secretEncrypted).toBe(gongCiphertext);
     expect(getCredential(openrouter.id)?.secretEncrypted).toBe(openrouterCiphertext);
   });

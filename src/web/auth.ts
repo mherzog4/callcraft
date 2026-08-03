@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { getSeller } from "@/src/db/repositories";
 import { DEMO_SELLER_ID } from "@/src/demo/seed";
 import { getEnv } from "@/src/env";
+import { isDemoMode } from "@/src/runtime/policy";
 import { readSession } from "@/src/security/session";
 
 function cookieValue(header: string | null, name: string): string | undefined {
@@ -21,7 +22,7 @@ export function sellerIdFromRequest(request: Request): string | null {
     env.SESSION_SECRET,
   );
   if (signed && getSeller(signed)) return signed;
-  if (env.DEMO_MODE && getSeller(DEMO_SELLER_ID)) return DEMO_SELLER_ID;
+  if (isDemoMode(env.APP_MODE) && getSeller(DEMO_SELLER_ID)) return DEMO_SELLER_ID;
   return null;
 }
 
@@ -37,12 +38,6 @@ export async function currentSellerId(): Promise<string> {
   const store = await cookies();
   const signed = readSession(store.get("session")?.value, env.SESSION_SECRET);
   if (signed && getSeller(signed)) return signed;
-  if (env.DEMO_MODE && getSeller(DEMO_SELLER_ID)) return DEMO_SELLER_ID;
+  if (isDemoMode(env.APP_MODE) && getSeller(DEMO_SELLER_ID)) return DEMO_SELLER_ID;
   redirect("/api/slack/oauth/start");
-}
-
-export function assertDemoIsolation(mode: "demo" | "real"): void {
-  if (getEnv().DEMO_MODE && mode !== "demo") {
-    throw new Error("Real provider access is disabled while DEMO_MODE=true");
-  }
 }
