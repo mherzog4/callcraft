@@ -1,0 +1,69 @@
+marketing/.htmlvalidate.json
+  s_a7553d23a94897::t_7b45c99d3658c3 1-7
+docs/README.md
+  s_a7553d23a94897::t_3df65461c2fbb5 6
+.gitignore
+  s_a7553d23a94897::t_2fe11040de2a30 16
+marketing/favicon.svg
+  s_a7553d23a94897::t_8b28931d4e30e6 1-11
+package.json
+  s_a7553d23a94897::t_92b0425d4879aa 28-29
+  s_a7553d23a94897::t_2a90c24344e063 53
+README.md
+  s_a7553d23a94897::t_b3399cef3f69ac 5,95-97
+  s_2f35c586a11842::t_0a1a79f0bfd1f4 98
+marketing/robots.txt
+  s_a7553d23a94897::t_33f595cf51d376 1-4
+marketing/og.svg
+  s_a7553d23a94897::t_9571de08f5ba32 1-47
+docs/adr/0005-separate-static-marketing-deployment.md
+  s_a7553d23a94897::t_c4394e742a33bf 1-11
+marketing/sitemap.xml
+  s_a7553d23a94897::t_d56373aedff11c 1-8
+marketing/README.md
+  s_a7553d23a94897::t_5ff4f1cab48f6d 1-23
+marketing/index.html
+  s_a7553d23a94897::t_f6c11de7d1ef70 96
+  s_a7553d23a94897::t_6150b931919743 1-11,14-18,26-31,34-95,97-102,107-190,192-257,259-356,360-363,365-472
+  s_a7553d23a94897::t_0b26b531a64df1 22-25
+  s_a7553d23a94897::t_494815f46d54c5 103,191,258,357-359,364
+  s_a7553d23a94897::t_16c4de29b3478f 12-13,19-21,32-33
+  s_a7553d23a94897::t_df34297585d7c1 104-106
+docs/adr/README.md
+  s_a7553d23a94897::t_7d8aae36315e87 9
+marketing/vercel.json
+  s_a7553d23a94897::t_f946618ff15d2b 1-10,12-41
+  s_a7553d23a94897::t_b65a6ce6bdf7a0 11
+.github/workflows/ci.yml
+  s_a7553d23a94897::t_ae110afd9f4299 23
+marketing/styles.css
+  s_a7553d23a94897::t_1f4689b3999225 1-146,157-655,657-1405
+  s_a7553d23a94897::t_a5348430a1b5f3 656
+  s_a7553d23a94897::t_d0e6cb0276e933 147-156
+package-lock.json
+  s_a7553d23a94897::t_4c85e83fb0d300 33,966-978,4998-5014,5738-5826,6548-6557,7506-7529,7733-7742,8249-8255
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "c4d9b20e3d4742b44507dcbf1fb32a0ea039e053",
+  "prompts": {},
+  "sessions": {
+    "s_2f35c586a11842": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "019fb8b9-aa7c-75b3-8298-981d18930171",
+        "model": "unknown"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    },
+    "s_a7553d23a94897": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "019fb9be-c851-7c98-bf78-5862013cf419",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    }
+  }
+}
