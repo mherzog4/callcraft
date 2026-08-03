@@ -2,6 +2,7 @@
 
 CallCraft is an open-source, production-minded prototype for individual sellers. It watches completed Gong calls, waits for the transcript, extracts an evidence-backed summary through OpenRouter, composes a follow-up, and sends it privately to Slack. The seller can inspect Gong context and transcript evidence, edit/regenerate, then explicitly confirm a Gmail send. Email is **never sent automatically**.
 
+[![Marketing site](https://img.shields.io/badge/site-callcraft--oss.vercel.app-b8f66d)](https://callcraft-oss.vercel.app)
 ![MIT](https://img.shields.io/badge/license-MIT-green)
 
 ## Demo in five minutes (no Docker)
@@ -90,6 +91,10 @@ npm run check
 ```
 
 Default CI mocks all providers. Real-provider smoke tests must be separate, opt-in, and secret-gated.
+
+## Marketing site
+
+The public site at [callcraft-oss.vercel.app](https://callcraft-oss.vercel.app) is a dependency-free static project in [`marketing/`](marketing/README.md). It deploys separately from the operational application so Vercel never serves routes that require the persistent SQLite volume or worker process.
 
 ## Optional Docker Compose
 

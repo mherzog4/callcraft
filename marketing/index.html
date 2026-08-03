@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#08100d" />
+    <meta
+      name="description"
+      content="CallCraft turns Gong transcripts into evidence-backed follow-up emails, delivers them in Slack, and sends only after seller approval. Open source and self-hostable."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://callcraft-oss.vercel.app/" />
+    <meta property="og:site_name" content="CallCraft" />
+    <meta property="og:title" content="CallCraft — Gong Follow-Ups That Stay Grounded" />
+    <meta
+      property="og:description"
+      content="From completed Gong call to an evidence-backed Slack draft. You still press send."
+    />
+    <meta property="og:image" content="https://callcraft-oss.vercel.app/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="CallCraft — The follow-up writes itself. You still press send."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="CallCraft — Gong Follow-Ups That Stay Grounded" />
+    <meta
+      name="twitter:description"
+      content="From completed Gong call to an evidence-backed Slack draft. You still press send."
+    />
+    <meta name="twitter:image" content="https://callcraft-oss.vercel.app/og.png" />
+    <link rel="canonical" href="https://callcraft-oss.vercel.app/" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
+    <title>CallCraft — Gong Follow-Ups That Stay Grounded</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to Content</a>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="CallCraft Home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span translate="no">CallCraft</span>
+      </a>
+      <nav aria-label="Primary Navigation">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#why-callcraft">Why CallCraft</a>
+        <a
+          href="https://github.com/mherzog4/callcraft/tree/main/docs"
+          target="_blank"
+          rel="noreferrer"
+          >Docs</a
+        >
+      </nav>
+      <a
+        class="button button-small button-ghost header-cta"
+        href="https://github.com/mherzog4/callcraft"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.77-.24.77-.54v-2.18c-3.13.68-3.79-1.33-3.79-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.72 1.16 1.72 1.16 1 1.72 2.63 1.22 3.27.93.1-.73.39-1.22.71-1.5-2.5-.28-5.13-1.25-5.13-5.54 0-1.23.44-2.23 1.16-3.02-.12-.28-.5-1.43.11-2.98 0 0 .94-.3 3.08 1.15A10.7 10.7 0 0 1 12 6.06c.95 0 1.9.13 2.8.38 2.14-1.45 3.08-1.15 3.08-1.15.61 1.55.23 2.7.11 2.98.72.79 1.16 1.79 1.16 3.02 0 4.3-2.63 5.25-5.14 5.53.4.35.76 1.03.76 2.08v3.19c0 .3.21.65.78.54A11.2 11.2 0 0 0 12 .8Z"
+          />
+        </svg>
+        GitHub
+      </a>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-glow" aria-hidden="true"></div>
+        <div class="hero-copy">
+          <div class="eyebrow"><span></span> Open-Source Follow-Up Copilot</div>
+          <h1 id="hero-title">The follow-up writes itself. <em>You still press send.</em></h1>
+          <p class="hero-lede">
+            CallCraft turns completed Gong calls into evidence-backed emails, brings every draft to
+            Slack, and sends through Gmail only after the seller approves it.
+          </p>
+          <div class="hero-actions">
+            <a
+              class="button button-primary"
+              href="https://github.com/mherzog4/callcraft"
+              target="_blank"
+              rel="noreferrer"
+            >
+              View on GitHub
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <path d="m7 4 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" />
+              </svg>
+            </a>
+            <a class="button button-ghost" href="#how-it-works">See How It Works</a>
+          </div>
+          <ul class="hero-notes">
+            <li><span aria-hidden="true">✓</span> Self-hostable</li>
+            <li><span aria-hidden="true">✓</span> Transcript-grounded</li>
+            <li><span aria-hidden="true">✓</span> Human-approved</li>
+          </ul>
+        </div>
+
+        <figure class="product-stage">
+          <figcaption class="sr-only">
+            Example of an evidence-backed CallCraft draft in Slack
+          </figcaption>
+          <div class="stage-grid" aria-hidden="true"></div>
+          <div class="pipeline-pill">
+            <span class="pipeline-step">
+              <span class="service-icon gong" aria-hidden="true">G</span> Gong
+            </span>
+            <span class="pipeline-arrow" aria-hidden="true">→</span>
+            <span class="pipeline-step">
+              <span class="service-icon slack" aria-hidden="true">✣</span> Slack
+            </span>
+            <span class="pipeline-arrow" aria-hidden="true">→</span>
+            <span class="pipeline-step">
+              <span class="service-icon gmail" aria-hidden="true">M</span> Gmail
+            </span>
+          </div>
+
+          <article class="slack-window">
+            <div class="window-bar">
+              <div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+              <span>CallCraft <b>APP</b></span>
+              <span class="online"><i></i> Ready</span>
+            </div>
+            <div class="message">
+              <div class="avatar" aria-hidden="true">C</div>
+              <div class="message-body">
+                <div class="message-meta">
+                  <strong>CallCraft</strong><span class="app-tag">APP</span><time>10:42 AM</time>
+                </div>
+                <h2>Follow-up: Northstar Product Evaluation</h2>
+                <section class="gong-context" aria-labelledby="context-title">
+                  <div class="context-heading" id="context-title">
+                    <span class="context-dot" aria-hidden="true"></span> Gong Context
+                  </div>
+                  <p>
+                    Northstar wants to replace manual follow-up before its Q4 rollout. Security
+                    review is the remaining blocker.
+                  </p>
+                  <div class="context-tags">
+                    <span>Pilot: 5 sellers</span><span>Next step: security review</span>
+                  </div>
+                </section>
+                <div class="email-preview">
+                  <dl>
+                    <div>
+                      <dt>To</dt>
+                      <dd>Jordan Lee</dd>
+                    </div>
+                    <div>
+                      <dt>Subject</dt>
+                      <dd>Next steps for the Northstar pilot</dd>
+                    </div>
+                  </dl>
+                  <div class="email-copy">
+                    <p>Hi Jordan,</p>
+                    <p>Thanks for the thoughtful conversation.</p>
+                    <p>We’ll start with a five-seller pilot before the broader Q4 rollout.</p>
+                    <p>Alex will send the security packet and pilot pricing today.</p>
+                  </div>
+                </div>
+                <div class="evidence-line">
+                  <svg viewBox="0 0 20 20" aria-hidden="true">
+                    <path
+                      d="M10 2.5 16 5v4.4c0 3.7-2.55 6.58-6 8.1-3.45-1.52-6-4.4-6-8.1V5l6-2.5Z"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    />
+                    <path
+                      d="m7.2 9.8 1.7 1.7 3.9-4"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    />
+                  </svg>
+                  4 claims verified against transcript evidence
+                </div>
+                <div class="mock-actions" aria-hidden="true">
+                  <span>Edit</span><span>Regenerate</span><span>View Evidence</span
+                  ><span class="send">Send via Gmail</span>
+                </div>
+              </div>
+            </div>
+          </article>
+          <div class="proof-chip proof-top" aria-hidden="true"><i></i> Transcript Ready</div>
+          <div class="proof-chip proof-bottom" aria-hidden="true"><i></i> Evidence Linked</div>
+        </figure>
+      </section>
+
+      <section class="trust-strip" aria-label="Designed for your sales workflow">
+        <p>Built for sellers who already live in</p>
+        <div class="trust-products">
+          <span><b class="gong-word">G</b> Gong</span>
+          <span><b class="slack-word">✣</b> Slack</span>
+          <span><b class="gmail-word">M</b> Gmail</span>
+          <span><b class="openrouter-word">◎</b> OpenRouter</span>
+        </div>
+      </section>
+
+      <section class="section workflow" id="how-it-works" aria-labelledby="workflow-title">
+        <div class="section-intro">
+          <div class="eyebrow"><span></span> How It Works</div>
+          <h2 id="workflow-title">From “call ended” to “follow-up sent” without the busywork.</h2>
+          <p>CallCraft handles the mechanical parts while the seller keeps the final say.</p>
+        </div>
+        <ol class="workflow-grid">
+          <li>
+            <span class="step-number">01</span>
+            <div class="step-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                />
+              </svg>
+            </div>
+            <h3>Call Ends in Gong</h3>
+            <p>
+              CallCraft waits for the completed transcript, participant details, and Gong context.
+            </p>
+          </li>
+          <li>
+            <span class="step-number">02</span>
+            <div class="step-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="m12 3 1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7L12 3Z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                />
+              </svg>
+            </div>
+            <h3>Evidence Becomes a Draft</h3>
+            <p>
+              OpenRouter extracts cited claims; deterministic templates turn only those claims into
+              copy.
+            </p>
+          </li>
+          <li>
+            <span class="step-number">03</span>
+            <div class="step-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M4 6h16v12H4zM5 7l7 6 7-6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                />
+              </svg>
+            </div>
+            <h3>You Review &amp; Send</h3>
+            <p>
+              Edit, regenerate, inspect evidence, then confirm the exact Gmail message from Slack.
+            </p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="section features" id="why-callcraft" aria-labelledby="features-title">
+        <div class="section-intro split-intro">
+          <div>
+            <div class="eyebrow"><span></span> Why CallCraft</div>
+            <h2 id="features-title">Fast follow-up without handing the keys to AI.</h2>
+          </div>
+          <p>
+            Most follow-up tools optimize for autonomy. CallCraft optimizes for accuracy,
+            observability, and seller control.
+          </p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card feature-large">
+            <div class="feature-icon lime" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M8.5 12.5 11 15l5-6M12 3l8 3v6c0 4.7-3.2 7.7-8 9-4.8-1.3-8-4.3-8-9V6l8-3Z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                />
+              </svg>
+            </div>
+            <h3>Every Claim Has a Source</h3>
+            <p>
+              Material facts map back to timestamped transcript segments. Unsupported dates, prices,
+              commitments, links, and recipients are rejected before a draft appears.
+            </p>
+            <div class="evidence-stack" aria-hidden="true">
+              <div><span>“Five-seller pilot”</span><b>12:42</b></div>
+              <div><span>“Security review next”</span><b>18:07</b></div>
+              <div><span>“Q4 rollout”</span><b>23:16</b></div>
+            </div>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon violet" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M5 6h14v10H9l-4 3V6Zm4 4h6M9 13h4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                />
+              </svg>
+            </div>
+            <h3>Lives Where Sellers Work</h3>
+            <p>
+              Private Slack drafts arrive automatically with Gong context and clear next actions.
+            </p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon blue" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                />
+              </svg>
+            </div>
+            <h3>Your Inbox Stays the Sender</h3>
+            <p>
+              Gmail submits the approved revision, so the message appears in Sent without copy and
+              paste.
+            </p>
+          </article>
+          <article class="feature-card feature-wide">
+            <div class="feature-copy">
+              <div class="feature-icon amber" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M7 10V7a5 5 0 0 1 10 0v3M5 10h14v11H5z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                  />
+                </svg>
+              </div>
+              <h3>Open Source by Design</h3>
+              <p>
+                Audit the workflow, choose the OpenRouter model, control transcript retention, and
+                deploy on your own infrastructure. Demo mode never contacts real providers.
+              </p>
+              <a
+                href="https://github.com/mherzog4/callcraft/tree/main/docs/adr"
+                target="_blank"
+                rel="noreferrer"
+                >Read the Architecture Decisions <span aria-hidden="true">→</span></a
+              >
+            </div>
+            <figure class="code-figure">
+              <figcaption class="sr-only">Example CallCraft local setup commands</figcaption>
+              <pre><code><span>$</span> cp .env.example .env
+<span>$</span> npm install
+<span>$</span> npm run db:migrate
+<span>$</span> npm run worker -- --watch
+<span class="success">✓</span> CallCraft is ready</code></pre>
+            </figure>
+          </article>
+        </div>
+      </section>
+
+      <section class="section principles" aria-labelledby="principles-title">
+        <div class="principles-card">
+          <div>
+            <div class="eyebrow"><span></span> The Principle</div>
+            <h2 id="principles-title">Automate preparation. Preserve judgment.</h2>
+          </div>
+          <blockquote>
+            “A fast follow-up is useful. A fast, fabricated follow-up is worse than no follow-up at
+            all.”
+          </blockquote>
+          <ul>
+            <li><span aria-hidden="true">01</span> Email never sends automatically</li>
+            <li><span aria-hidden="true">02</span> Provider failures never fall back silently</li>
+            <li><span aria-hidden="true">03</span> Ambiguous sends never retry blindly</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section faq" aria-labelledby="faq-title">
+        <div class="section-intro">
+          <div class="eyebrow"><span></span> Common Questions</div>
+          <h2 id="faq-title">Built to be understood.</h2>
+        </div>
+        <div class="faq-list">
+          <details>
+            <summary>Does CallCraft send emails on its own?</summary>
+            <p>
+              No. Draft generation is automatic, but every email requires an explicit seller
+              confirmation in Slack showing the exact sender, recipients, subject, and body.
+            </p>
+          </details>
+          <details>
+            <summary>Can I try it without Gong, Slack, or Gmail credentials?</summary>
+            <p>
+              Yes. Seeded demo mode runs the complete workflow with synthetic Gong-shaped data and
+              local Slack and email previews. It cannot contact real providers.
+            </p>
+          </details>
+          <details>
+            <summary>Where does CallCraft store transcript data?</summary>
+            <p>
+              The default self-hosted deployment uses SQLite on your host. Retention is
+              configurable, including deletion after Slack delivery. Multi-host deployments can
+              replace the repository with PostgreSQL.
+            </p>
+          </details>
+          <details>
+            <summary>Why isn’t this a fully autonomous agent?</summary>
+            <p>
+              Follow-up contains customer commitments, dates, and next steps. CallCraft automates
+              the repetitive work while preserving a clear evidence trail and human approval
+              boundary.
+            </p>
+          </details>
+        </div>
+      </section>
+
+      <section class="final-cta" aria-labelledby="cta-title">
+        <div class="cta-grid" aria-hidden="true"></div>
+        <div class="eyebrow"><span></span> Open Source on GitHub</div>
+        <h2 id="cta-title">Ship the follow-up before the context goes cold.</h2>
+        <p>Run the seeded demo in 5 minutes. Connect real providers when you’re ready.</p>
+        <div class="hero-actions centered">
+          <a
+            class="button button-primary"
+            href="https://github.com/mherzog4/callcraft"
+            target="_blank"
+            rel="noreferrer"
+            >Get CallCraft <span aria-hidden="true">→</span></a
+          >
+          <a
+            class="button button-ghost"
+            href="https://github.com/mherzog4/callcraft/blob/main/README.md"
+            target="_blank"
+            rel="noreferrer"
+            >Read the Setup Guide</a
+          >
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand" href="#top" aria-label="CallCraft Home">
+        <span class="brand-mark" aria-hidden="true">C</span><span translate="no">CallCraft</span>
+      </a>
+      <p>Grounded follow-up for sellers who care what gets sent.</p>
+      <nav aria-label="Footer Navigation">
+        <a href="https://github.com/mherzog4/callcraft" target="_blank" rel="noreferrer">GitHub</a>
+        <a
+          href="https://github.com/mherzog4/callcraft/tree/main/docs"
+          target="_blank"
+          rel="noreferrer"
+          >Docs</a
+        >
+        <a
+          href="https://github.com/mherzog4/callcraft/blob/main/LICENSE"
+          target="_blank"
+          rel="noreferrer"
+          >MIT License</a
+        >
+      </nav>
+    </footer>
+  </body>
+</html>
