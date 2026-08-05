@@ -1,0 +1,40 @@
+scripts/container-entrypoint.sh
+  s_a7553d23a94897::t_2abaedb07ace2b 1-11
+docs/RAILWAY.md
+  s_a7553d23a94897::t_2727ce0be7027e 3,16
+Dockerfile
+  s_a7553d23a94897::t_29e281c9c680a0 24-27,29
+compose.yaml
+  s_a7553d23a94897::t_c172339c7f67b6 4
+scripts/start-container.ts
+  s_a7553d23a94897::t_0e9d25d6334a94 66-69
+  s_751d24adfa5a72::t_16401ee4bc03e9 31-38
+tests/unit/deployment.test.ts
+  s_a7553d23a94897::t_66d1f67b1eb7b0 18-19,31,33,36,38-41
+docs/DEPLOYMENT.md
+  s_a7553d23a94897::t_ca43d7313ab00d 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "a1e5bc65b2d85c4c421a0e2178ac475267522021",
+  "prompts": {},
+  "sessions": {
+    "s_751d24adfa5a72": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fcf3b-e368-74b2-8864-483ba6115562",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    },
+    "s_a7553d23a94897": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "019fb9be-c851-7c98-bf78-5862013cf419",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    }
+  }
+}
