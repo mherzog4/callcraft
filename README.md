@@ -125,6 +125,10 @@ Default CI mocks all providers and runs the deterministic no-network eval baseli
 
 The public site at [callcraft-oss.vercel.app](https://callcraft-oss.vercel.app) is a dependency-free static project in [`marketing/`](marketing/README.md). It deploys separately from the operational application so Vercel never serves routes that require the persistent SQLite volume or worker process.
 
+## Hosted evaluation demo
+
+[Deploy one Railway service](docs/RAILWAY.md) with one replica and a persistent volume mounted at `/data`. The checked-in Railway configuration builds the Dockerfile, migrates SQLite at runtime, supervises the web process and durable worker together, and checks `/api/health`. A hosted service removes the need for a local Cloudflare Tunnel.
+
 ## Optional Docker Compose
 
 ```bash

@@ -2,6 +2,12 @@
 
 CallCraft's operational application is a stateful web process plus a durable worker sharing one SQLite database. The Vercel project hosts only the static marketing site. Do not deploy the operational application to a serverless platform without replacing SQLite and the queue.
 
+## Recommended hosted demo: Railway
+
+Deploy one Railway service with one replica and a persistent volume mounted at `/data`. The checked-in `railway.json` uses the Dockerfile, starts migrations plus the web and worker processes in one supervised container, gates deployments on `/api/health`, and restarts failures. See the complete [Railway deployment guide](./RAILWAY.md).
+
+A hosted Railway service replaces the need for Cloudflare Tunnel. Point `callcraft.mattherzog.xyz` to the Railway-provided CNAME and keep SQLite-backed web and worker processes together.
+
 ## Fast local evaluator setup
 
 1. Start a temporary HTTPS endpoint:
@@ -38,6 +44,8 @@ npm run acceptance:verify
 ```
 
 The verifier inspects local state without calling providers. It requires the evaluation provider matrix, synthetic Gong-only calls, a delivered Slack workflow, a Gmail-submitted immutable intent with a provider message ID, non-reserved recipients, and one intent per draft revision. Receipt/delivery must still be checked in evaluator-owned Gmail accounts.
+
+Cloudflare Tunnel is only a bridge for Slack callbacks when the application runs on a local machine. It is not needed for Railway or another public single-host deployment.
 
 ## Docker Compose on one host
 
