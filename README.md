@@ -54,7 +54,7 @@ npm run eval
 For opt-in OpenRouter model comparison:
 
 ```bash
-npm run eval:live -- --models openai/gpt-4.1-mini anthropic/claude-sonnet-4
+npm run eval:live -- --models google/gemini-2.5-flash openai/gpt-4.1-mini
 ```
 
 The versioned synthetic dataset measures citation validity, evidence and concept recall, recipient accuracy, unsupported content, draft grounding, latency, tokens, repair attempts, and OpenRouter-reported cost. An optional `npm run eval:retrieval` experiment uses OpenRouter embeddings with `sqlite-vec`, but vector retrieval does not alter the safer full-transcript default. See [Applied AI evals](docs/EVALS.md).
@@ -109,7 +109,7 @@ npm run format:check
 npm run lint
 npm run typecheck
 npm run eval
-npm run eval:live -- --models openai/gpt-4.1-mini
+npm run eval:live -- --models google/gemini-2.5-flash
 npm run eval:retrieval
 npm run evaluation:doctor
 npm run acceptance:verify

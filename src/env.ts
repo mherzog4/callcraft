@@ -11,7 +11,7 @@ const rawEnvSchema = z
     SESSION_SECRET: z.string().min(32).default("development-only-session-secret-change"),
     OPENROUTER_API_KEY: z.string().optional(),
     OPENROUTER_BASE_URL: z.string().url().default("https://openrouter.ai/api/v1"),
-    OPENROUTER_MODEL: z.string().default("openai/gpt-4.1-mini"),
+    OPENROUTER_MODEL: z.string().default("google/gemini-2.5-flash"),
     SLACK_CLIENT_ID: z.string().optional(),
     SLACK_CLIENT_SECRET: z.string().optional(),
     SLACK_SIGNING_SECRET: z.string().optional(),
