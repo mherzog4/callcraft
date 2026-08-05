@@ -1,0 +1,47 @@
+.env.example
+  s_a7553d23a94897::t_bd34acb0509851 10
+src/env.ts
+  s_a7553d23a94897::t_ed40fed6f15ed9 14
+scripts/setup-evaluation.ts
+  s_a7553d23a94897::t_613a05a46fbf85 51
+README.md
+  s_a7553d23a94897::t_f12c4d9e736ef4 112
+  s_a7553d23a94897::t_126bf9b9cb7672 57
+tests/contract/openrouter.test.ts
+  s_a7553d23a94897::t_c8cf90d0c74b83 16-29,90-92,146-164,166-198
+  s_a7553d23a94897::t_a572b643fb8bc0 93-145
+  s_a7553d23a94897::t_f4e91d66690324 5-15,78-84,89,165
+  s_a7553d23a94897::t_9e91acbb3f7268 85-88
+docs/RAILWAY.md
+  s_a7553d23a94897::t_1c7fec76e03c82 31
+docs/EVALUATION.md
+  s_a7553d23a94897::t_7b0855d7c85d07 76,93
+docs/EVALS.md
+  s_a7553d23a94897::t_cff313825c190c 45,47,52
+  s_a7553d23a94897::t_534c40ef6d3512 53
+scripts/eval.ts
+  s_a7553d23a94897::t_48d3a8758e543b 29
+src/integrations/openrouter/client.ts
+  s_a7553d23a94897::t_36ee356ff39812 71-80,153,158
+  s_a7553d23a94897::t_8189526edc1f01 208-217
+  s_a7553d23a94897::t_143828cea7f6e2 110,176
+  s_a7553d23a94897::t_66c0e1536bd412 19-23,91,95,111,146,154-157,159-160
+  s_a7553d23a94897::t_151f2bccf5e862 183-192,220-229
+  s_a7553d23a94897::t_1bea4ce853edd1 171
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "b7365fffdbca571d5c92f28c1cce669596c5018f",
+  "prompts": {},
+  "sessions": {
+    "s_a7553d23a94897": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "019fb9be-c851-7c98-bf78-5862013cf419",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    }
+  }
+}
