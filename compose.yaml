@@ -1,6 +1,7 @@
 services:
   web:
     build: .
+    command: ["node", "server.js"]
     env_file: .env
     environment:
       DATABASE_PATH: /data/app.db

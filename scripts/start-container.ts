@@ -28,6 +28,14 @@ process.stdout.write(`==> Starting web and worker on port ${runtimeEnv.PORT ?? "
 const children = new Map<string, ChildProcess>();
 let stopping = false;
 
+function finishStop(): void {
+  if (!stopping) return;
+  const running = [...children.values()].some(
+    (child) => child.exitCode === null && child.signalCode === null,
+  );
+  if (!running) process.exit(process.exitCode ?? 0);
+}
+
 function stop(exitCode: number, signal: NodeJS.Signals = "SIGTERM"): void {
   if (stopping) return;
   stopping = true;
@@ -55,7 +63,10 @@ function supervise(name: string, command: string, args: string[]): ChildProcess 
     stop(1);
   });
   child.once("exit", (code, signal) => {
-    if (stopping) return;
+    if (stopping) {
+      finishStop();
+      return;
+    }
     process.stderr.write(
       `${name} process exited (code=${String(code)}, signal=${String(signal)})\n`,
     );

@@ -4,7 +4,7 @@ CallCraft's operational application is a stateful web process plus a durable wor
 
 ## Recommended hosted demo: Railway
 
-Deploy one Railway service with one replica and a persistent volume mounted at `/data`. The checked-in `railway.json` uses the Dockerfile, starts migrations plus the web and worker processes in one supervised container, gates deployments on `/api/health`, and restarts failures. See the complete [Railway deployment guide](./RAILWAY.md).
+Deploy one Railway service with one replica and a persistent volume mounted at `/data`. The checked-in `railway.json` uses the Dockerfile, gates deployments on `/api/health`, and restarts failures. The image entrypoint prepares the mounted volume, drops privileges, and starts migrations plus the web and worker processes in one supervised container. See the complete [Railway deployment guide](./RAILWAY.md).
 
 A hosted Railway service replaces the need for Cloudflare Tunnel. Point `callcraft.mattherzog.xyz` to the Railway-provided CNAME and keep SQLite-backed web and worker processes together.
 

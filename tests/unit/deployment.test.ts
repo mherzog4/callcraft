@@ -15,6 +15,8 @@ const railway = readJsonFile<{
 }>("railway.json");
 const packageJson = readJsonFile<{ scripts: Record<string, string> }>("package.json");
 const dockerfile = readFileSync("Dockerfile", "utf8");
+const entrypoint = readFileSync("scripts/container-entrypoint.sh", "utf8");
+const compose = readFileSync("compose.yaml", "utf8");
 
 describe("Railway deployment contract", () => {
   it("builds the Dockerfile and starts the supervised single-service runtime", () => {
@@ -23,15 +25,19 @@ describe("Railway deployment contract", () => {
       dockerfilePath: "Dockerfile",
     });
     expect(railway.deploy).toMatchObject({
-      startCommand: "npm run start:container",
       healthcheckPath: "/api/health",
       restartPolicyType: "ON_FAILURE",
     });
+    expect(railway.deploy.startCommand).toBeUndefined();
     expect(packageJson.scripts["start:container"]).toBe("tsx scripts/start-container.ts");
+    expect(dockerfile).toContain('CMD ["npm", "run", "start:container"]');
   });
 
-  it("ships runtime TypeScript path resolution and uses a non-root container user", () => {
+  it("fixes mounted-volume ownership before dropping application processes to UID 1000", () => {
     expect(dockerfile).toContain("/app/tsconfig.json ./tsconfig.json");
-    expect(dockerfile).toContain("USER 1000:1000");
+    expect(dockerfile).toContain('ENTRYPOINT ["/usr/local/bin/callcraft-entrypoint"]');
+    expect(entrypoint).toContain("chown 1000:1000 /data");
+    expect(entrypoint).toContain("setpriv --reuid=1000 --regid=1000");
+    expect(compose).toContain('command: ["node", "server.js"]');
   });
 });
