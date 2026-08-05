@@ -21,7 +21,9 @@ COPY --chown=1000:1000 --from=builder /app/src ./src
 COPY --chown=1000:1000 --from=builder /app/node_modules ./node_modules
 COPY --chown=1000:1000 --from=builder /app/package.json ./package.json
 COPY --chown=1000:1000 --from=builder /app/tsconfig.json ./tsconfig.json
-RUN mkdir -p /data && chown 1000:1000 /data
-USER 1000:1000
+COPY --chmod=755 --chown=0:0 --from=builder /app/scripts/container-entrypoint.sh /usr/local/bin/callcraft-entrypoint
+RUN mkdir -p /data
+# The entrypoint fixes runtime volume ownership, then drops to UID/GID 1000 before application code.
+ENTRYPOINT ["/usr/local/bin/callcraft-entrypoint"]
 EXPOSE 3000
-CMD ["node", "server.js"]
+CMD ["npm", "run", "start:container"]

@@ -1,6 +1,6 @@
 # Railway deployment
 
-Railway is the recommended always-on host for the CallCraft evaluation demo. The repository-level [`railway.json`](../railway.json) selects the Dockerfile build, runs migrations before startup, supervises the standalone web server and durable worker in one container, checks `/api/health`, and restarts failed deployments.
+Railway is the recommended always-on host for the CallCraft evaluation demo. The repository-level [`railway.json`](../railway.json) selects the Dockerfile build, checks `/api/health`, and restarts failed deployments. The image entrypoint prepares the runtime volume and launches the supervised standalone web server and durable worker.
 
 ## Why one Railway service
 
@@ -13,7 +13,7 @@ CallCraft intentionally uses SQLite for its single-host reference deployment. Th
 3. Add a Railway volume to the service and mount it at `/data` **before the first live workflow**.
 4. Keep the service at one replica.
 
-Railway volumes are mounted only at runtime. `npm run start:container` applies Drizzle migrations after the volume is available, then starts both processes with signal forwarding and fail-together behavior.
+Railway volumes are mounted only at runtime and initially arrive root-owned. The container entrypoint fixes the `/data` mount-root ownership, drops to UID/GID 1000, and invokes `npm run start:container`. The runtime then applies Drizzle migrations and starts both processes with signal forwarding and fail-together behavior.
 
 ## 2. Configure variables
 
