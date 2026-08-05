@@ -20,6 +20,7 @@ COPY --chown=1000:1000 --from=builder /app/scripts ./scripts
 COPY --chown=1000:1000 --from=builder /app/src ./src
 COPY --chown=1000:1000 --from=builder /app/node_modules ./node_modules
 COPY --chown=1000:1000 --from=builder /app/package.json ./package.json
+COPY --chown=1000:1000 --from=builder /app/tsconfig.json ./tsconfig.json
 RUN mkdir -p /data && chown 1000:1000 /data
 USER 1000:1000
 EXPOSE 3000

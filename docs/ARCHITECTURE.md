@@ -34,4 +34,4 @@ Deterministic citation, evidence, recipient, forbidden-content, and draft-ground
 
 ## SQLite boundary
 
-SQLite runs with WAL, foreign keys, and a busy timeout. Job claims and state transitions are short transactions. This supports one web host and a small number of local worker processes. Multi-host/serverless deployments must move the Drizzle repository to PostgreSQL and a distributed queue; business logic does not issue SQLite SQL directly.
+SQLite runs with WAL, foreign keys, and a busy timeout. Job claims and state transitions are short transactions. This supports one web host and a small number of local worker processes. The Railway deployment preserves this boundary by supervising web and worker in one service with one replica and a volume mounted at `/data`. Multi-host/serverless deployments must move the Drizzle repository to PostgreSQL and a distributed queue; business logic does not issue SQLite SQL directly.

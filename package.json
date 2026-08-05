@@ -13,6 +13,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "start:container": "tsx scripts/start-container.ts",
     "worker": "tsx --env-file=.env scripts/worker.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx --env-file=.env scripts/migrate.ts",

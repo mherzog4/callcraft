@@ -9,5 +9,6 @@
 | [0005](./0005-separate-static-marketing-deployment.md)           | Deploy the static marketing site separately            | Accepted |
 | [0006](./0006-explicit-evaluation-provider-policy.md)            | Enforce an explicit evaluation provider policy         | Accepted |
 | [0007](./0007-deterministic-evals-before-vector-retrieval.md)    | Require deterministic evals before vector retrieval    | Accepted |
+| [0008](./0008-single-service-railway-deployment.md)              | Deploy the SQLite demo as one Railway service          | Accepted |
 
 ADRs use sequential four-digit numbers. Do not rewrite an accepted decision after the architecture changes; add a new ADR and mark the old record as superseded.
