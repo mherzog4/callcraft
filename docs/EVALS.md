@@ -42,12 +42,14 @@ Put a limited OpenRouter key in `.env`, then run:
 
 ```bash
 npm run eval:live -- --models \
+  google/gemini-2.5-flash \
   openai/gpt-4.1-mini \
-  anthropic/claude-sonnet-4 \
-  google/gemini-2.5-flash
+  anthropic/claude-sonnet-4
 ```
 
 Use `--scenarios scenario-id another-id` for a smaller/cheaper run and `--no-fail` when exploration should write a report without returning a nonzero status. `EVAL_MODELS` supplies the default model list.
+
+The credentialed 2026-08-05 run selected `google/gemini-2.5-flash` as the hosted-demo default after it passed all six scenarios with 100% citation, lexical claim-support, concept-recall, and recipient scores. The run used 7,778 tokens, reported $0.0073 in cost, and had 6.7-second median scenario latency. Live model behavior can vary, so rerun the suite after prompt, model, or provider-routing changes rather than treating one historical run as a permanent guarantee.
 
 The runner executes extraction and composition sequentially to avoid creating an accidental burst across providers. Reports include:
 

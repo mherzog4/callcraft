@@ -26,7 +26,7 @@ if (live) {
   const configuredModels = (
     process.env.EVAL_MODELS ??
     runtimeEnv.OPENROUTER_MODEL ??
-    "openai/gpt-4.1-mini"
+    "google/gemini-2.5-flash"
   )
     .split(",")
     .map((value) => value.trim())

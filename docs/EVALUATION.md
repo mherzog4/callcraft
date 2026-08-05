@@ -73,7 +73,7 @@ DATABASE_PATH=./data/evaluation.db
 MASTER_KEY=PASTE_FIRST_RANDOM_VALUE
 SESSION_SECRET=PASTE_SECOND_RANDOM_VALUE
 OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
-OPENROUTER_MODEL=openai/gpt-4.1-mini
+OPENROUTER_MODEL=google/gemini-2.5-flash
 OPENROUTER_API_KEY=
 SLACK_CLIENT_ID=
 SLACK_CLIENT_SECRET=
@@ -90,7 +90,7 @@ Do not combine `APP_MODE` with the deprecated `DEMO_MODE` variable. Keep the sam
 
 1. Sign in at <https://openrouter.ai/>.
 2. Create an API key with a small spending limit suitable for testing.
-3. Choose a model that reliably supports JSON output. The default is `openai/gpt-4.1-mini`.
+3. Choose a model that reliably supports JSON output. The default is `google/gemini-2.5-flash`, which passed all checked-in live scenarios in the latest credentialed run.
 4. Save the key later in CallCraft Settings. It is encrypted in SQLite; leaving `OPENROUTER_API_KEY` blank avoids keeping the key in `.env`.
 
 Real OpenRouter failures are surfaced as failed/retrying jobs. CallCraft never substitutes deterministic demo output after a real-provider failure.

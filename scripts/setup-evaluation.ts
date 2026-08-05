@@ -48,7 +48,7 @@ setEnvValue(lines, "EVAL_REPORT_DIRECTORY", "./data/evals");
 setEnvValue(
   lines,
   "OPENROUTER_MODEL",
-  currentValue(lines, "OPENROUTER_MODEL") || "openai/gpt-4.1-mini",
+  currentValue(lines, "OPENROUTER_MODEL") || "google/gemini-2.5-flash",
 );
 setEnvValue(
   lines,
