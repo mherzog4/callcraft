@@ -1,0 +1,54 @@
+README.md
+  s_a7553d23a94897::t_fc00676af15558 128-131
+docs/adr/0008-single-service-railway-deployment.md
+  s_a7553d23a94897::t_950041b392a651 1-18
+package.json
+  s_a7553d23a94897::t_b00a9f370e9076 16
+docs/ARCHITECTURE.md
+  s_a7553d23a94897::t_3cf4e4f20f065e 37
+railway.json
+  s_a7553d23a94897::t_17624d5fd264bf 1-14
+docs/RAILWAY.md
+  s_a7553d23a94897::t_0203d836971406 1-113
+scripts/start-container.ts
+  s_a7553d23a94897::t_23d264e1216771 2-8,10,12-15,17-26,28-30,32-53,55-58,62-71
+  s_a7553d23a94897::t_2b1333eae8dea1 59-61
+  s_a7553d23a94897::t_27f1eb9f17c3b1 1,11,16,27,31,54
+  s_a7553d23a94897::t_7e71a807f8c86d 9
+docs/DEPLOYMENT.md
+  s_a7553d23a94897::t_4da4f5380837d5 5-10,48
+  s_ecf0cdcf2c757a::t_0dc9599dff31c1 49
+tests/unit/deployment.test.ts
+  s_a7553d23a94897::t_f2e3975e200707 4-12,15-16
+  s_a7553d23a94897::t_b87b9e6ce25ef3 1-3,13-14,17-37
+docs/README.md
+  s_a7553d23a94897::t_38ccfe5adc5f4f 6,8-9
+Dockerfile
+  s_a7553d23a94897::t_af64632992172d 23
+docs/adr/README.md
+  s_a7553d23a94897::t_2b3b58cb0483d3 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "d691820774231ee31c1cc21f0f428917ac004c5b",
+  "prompts": {},
+  "sessions": {
+    "s_a7553d23a94897": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "019fb9be-c851-7c98-bf78-5862013cf419",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    },
+    "s_ecf0cdcf2c757a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "019fba18-4237-7210-91a5-170750458fa8",
+        "model": "unknown"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    }
+  }
+}
