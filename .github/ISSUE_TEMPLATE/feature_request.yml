@@ -1,0 +1,24 @@
+name: Feature request
+description: Propose a change to CallCraft
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is hard or unsafe today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Privacy, safety, and eval impact
+      description: Does this touch transcripts, recipients, send confirmation, or the deterministic eval gates?
+    validations:
+      required: true

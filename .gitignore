@@ -14,3 +14,9 @@ test-results/
 *.db-wal
 *.tsbuildinfo
 .vercel/
+
+# local agent/editor tool state
+.claude/
+.codex/
+.cursor/
+.pi/
