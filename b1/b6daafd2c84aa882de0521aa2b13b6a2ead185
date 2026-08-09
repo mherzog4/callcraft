@@ -1,0 +1,43 @@
+.github/dependabot.yml
+  s_853596a0c65a6f::t_155e35c98e77d8 1-14
+.github/ISSUE_TEMPLATE/bug_report.yml
+  s_853596a0c65a6f::t_1ff72ccb338a62 1-38
+.github/ISSUE_TEMPLATE/config.yml
+  s_853596a0c65a6f::t_88dca8719b34da 1-5
+.github/pull_request_template.md
+  s_853596a0c65a6f::t_1c1ef609a337f7 1-12
+CODE_OF_CONDUCT.md
+  s_853596a0c65a6f::t_668a609f52c013 1-7
+.github/workflows/ci.yml
+  s_853596a0c65a6f::t_0279bdd9b156e5 26
+README.md
+  s_853596a0c65a6f::t_548648edfb5c05 5
+  s_853596a0c65a6f::t_3a2f01d3fbab40 118
+CONTRIBUTING.md
+  s_853596a0c65a6f::t_656d7569138013 13
+  s_853596a0c65a6f::t_471e30c8e30597 5
+.github/ISSUE_TEMPLATE/feature_request.yml
+  s_853596a0c65a6f::t_16c1eaf5f562d1 1-24
+package.json
+  s_853596a0c65a6f::t_5f4a0d26917b85 69-70
+.gitignore
+  s_853596a0c65a6f::t_067fe675af59fd 17-22
+package-lock.json
+  s_853596a0c65a6f::t_c9074e670b10de 6766-6768,7411-7413,7430
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "b1b6daafd2c84aa882de0521aa2b13b6a2ead185",
+  "prompts": {},
+  "sessions": {
+    "s_853596a0c65a6f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3af94342-1b19-42ff-8875-10a00eeb6a03",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    }
+  }
+}
