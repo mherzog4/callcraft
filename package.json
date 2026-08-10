@@ -20,6 +20,7 @@
     "db:seed": "tsx --env-file=.env scripts/seed.ts",
     "db:backup": "tsx --env-file=.env scripts/backup.ts",
     "demo:reset": "tsx --env-file=.env scripts/reset-demo.ts",
+    "demo:verify": "tsx --env-file=.env scripts/verify-demo.ts",
     "evaluation:setup": "tsx scripts/setup-evaluation.ts",
     "evaluation:doctor": "tsx --env-file=.env scripts/evaluation-doctor.ts",
     "evaluation:start": "tsx --env-file=.env scripts/start-evaluation.ts",

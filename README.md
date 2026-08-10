@@ -12,7 +12,7 @@ Every claim in the summary above carries the transcript segment ID it came from,
 
 ## Demo in five minutes (no Docker)
 
-Requirements: Node 20+ and npm 10+ on macOS or Linux, or Windows via WSL. `better-sqlite3` and `sqlite-vec` are native modules; a clean machine needs a C/C++ toolchain if no prebuilt binary matches. Verified on macOS and on Ubuntu with Node 22 in CI.
+Requirements: Node 20+ and npm 10+. CI runs this quickstart on Linux, macOS, and Windows with Node 22 on every pull request and weekly, and asserts a seeded call actually reaches `delivered`. `better-sqlite3` and `sqlite-vec` are native modules, so a machine with no matching prebuilt binary needs a C/C++ toolchain.
 
 ```bash
 cp .env.example .env

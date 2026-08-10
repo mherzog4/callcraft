@@ -62,7 +62,7 @@ Operational requirements:
 - one host and one persistent local filesystem;
 - encrypted disk/volume and restricted operator access;
 - backups with expiry aligned to transcript retention;
-- health checks against `/api/health`;
+- health checks against `/api/health` (see [monitoring signals](#monitoring-signals));
 - restart policies for web and worker;
 - log shipping that preserves CallCraft's redaction policy; and
 - monitoring for dead-letter jobs, Gmail `unknown` outcomes, OAuth reconnect state, OpenRouter latency/cost, and disk growth.
@@ -94,6 +94,22 @@ Store backups on encrypted storage with an expiry aligned to `TRANSCRIPT_RETENTI
 The worker installs handlers for `uncaughtException` and `unhandledRejection`. Each logs a `fatal` structured event and exits non-zero so the supervisor restarts the process — a worker that survives an unhandled rejection processes nothing while looking alive.
 
 Set `ERROR_WEBHOOK_URL` to receive those reports as a JSON POST. It is deliberately a plain webhook rather than a vendor SDK: any tracker, chat channel, or alert router accepts one, and a self-hoster owes nothing to a third party to run this. Reports contain the component, the reason, the error name, and stack frames — never error messages, which can quote a transcript line, a recipient, or a credential that failed to parse.
+
+## Monitoring signals
+
+`GET /api/health` returns every operational signal this deployment can see without a metrics stack, so one external uptime monitor polling one URL covers the list above. It answers 200 even when degraded — a degraded service is still serving, and the Railway deployment gate should not roll back a running deployment over a dead-letter job. **Alert on `status`, not on the HTTP code.**
+
+| Field                       | Degraded when | What it means                                                                                                                     | First action                                                                  |
+| --------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `deadLetters`               | > 0           | A job exhausted its attempts. The affected call will not progress on its own.                                                     | Inspect the job payload and the call state; requeue after fixing the cause.   |
+| `unresolvedSends`           | > 0           | A send intent is `unknown` or `submitting` — a crash or timeout after Gmail submission. Automatic retry is deliberately disabled. | Reconcile in the sender's Gmail Sent folder before any resend.                |
+| `providersNeedingAttention` | > 0           | An installation is in `error`, usually an expired or revoked OAuth grant.                                                         | Reconnect the provider from Settings.                                         |
+| `oldestDueJobSeconds`       | > 300         | Jobs are due but not being claimed: the worker is down, wedged, or not deployed.                                                  | Check the worker process; the web process stays healthy through this failure. |
+| `databaseBytes`             | never         | SQLite file size, for disk-growth trending against the volume.                                                                    | Alert externally on the volume, not on this field.                            |
+
+`degradedReasons` lists the machine-readable keys behind a degraded status, so an alert can route on cause rather than on a single boolean.
+
+The queue signal is the one worth wiring first. A stalled worker is invisible from outside: the site loads, calls arrive, and nothing is ever processed. The worker's own crash handlers, described above, cover the same failure from the inside.
 
 ## Production evolution
 
