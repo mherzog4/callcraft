@@ -71,8 +71,18 @@ curl https://YOUR-SERVICE.up.railway.app/api/health
 Expected response:
 
 ```json
-{ "status": "ok", "deadLetters": 0 }
+{
+  "status": "ok",
+  "deadLetters": 0,
+  "unresolvedSends": 0,
+  "providersNeedingAttention": 0,
+  "oldestDueJobSeconds": 0,
+  "databaseBytes": 212992,
+  "degradedReasons": []
+}
 ```
+
+The endpoint answers 200 while degraded, because a degraded service is still serving and the Railway deployment gate should not roll back a running deployment over a dead-letter job. Monitors must alert on `status`, not on the HTTP code. See [monitoring signals](./DEPLOYMENT.md#monitoring-signals) for what each field means and what to do about it.
 
 The configured Railway health check gates traffic during deployment. Add external uptime monitoring if continuous health monitoring is required.
 
