@@ -2,6 +2,10 @@ name: CI
 on:
   push:
   pull_request:
+  schedule:
+    # Native modules break from the outside — a new prebuilt, a runner image
+    # bump — so the clone path is re-proved weekly, not only when code changes.
+    - cron: "0 6 * * 1"
 permissions:
   contents: read
 jobs:
@@ -31,3 +35,38 @@ jobs:
         env:
           APP_MODE: demo
           DATABASE_PATH: ./data/e2e.db
+
+  # Runs the README quickstart on the platforms a contributor is likely to
+  # clone onto. better-sqlite3 and sqlite-vec are native modules, so "it builds
+  # on Ubuntu" is not evidence that it installs anywhere else. Skipped on
+  # branch pushes to keep the inner loop fast; pull requests and the weekly
+  # cron cover it.
+  quickstart:
+    if: github.event_name != 'push'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: cp .env.example .env
+      - run: npm run db:migrate
+      - run: npm run db:seed
+      - run: npm run worker
+      # A zero exit from the worker is also true of a no-op, so the demo path
+      # is only proved by a call actually reaching `delivered`.
+      - run: npm run demo:verify
+      - run: npm test
+      - run: npm run build
