@@ -21,6 +21,10 @@ const rawEnvSchema = z
     GONG_ACCESS_KEY: z.string().optional(),
     GONG_ACCESS_SECRET: z.string().optional(),
     TRANSCRIPT_RETENTION_DAYS: z.coerce.number().int().min(0).max(365).default(7),
+    // Optional generic webhook for fatal crashes. Deliberately not a vendor
+    // SDK: any tracker, chat channel, or alert router accepts a JSON POST, and
+    // a self-hoster owes nothing to a third party to run this.
+    ERROR_WEBHOOK_URL: z.string().url().optional(),
     LOG_LEVEL: z
       .enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"])
       .default("info"),

@@ -1,6 +1,11 @@
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import { closeDatabase, getDatabase } from "@/src/db/client";
 import { runWorkerUntilIdle, scheduleRecurringJobs } from "@/src/jobs/worker";
+import { installCrashHandlers } from "@/src/ops/crash";
+
+// The worker is the process whose death is invisible from outside: the web
+// process keeps serving and jobs simply stop draining.
+installCrashHandlers("worker");
 
 migrate(getDatabase().db, { migrationsFolder: "./drizzle" });
 const continuous = process.argv.includes("--watch");
