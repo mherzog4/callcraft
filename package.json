@@ -62,7 +62,7 @@
     "html-validate": "^9.7.1",
     "prettier": "^3.6.2",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.2",
+    "typescript": "^7.0.2",
     "vitest": "^3.2.4"
   },
   "overrides": {
