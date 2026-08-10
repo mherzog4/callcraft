@@ -67,6 +67,34 @@ Operational requirements:
 - log shipping that preserves CallCraft's redaction policy; and
 - monitoring for dead-letter jobs, Gmail `unknown` outcomes, OAuth reconnect state, OpenRouter latency/cost, and disk growth.
 
+## Backups
+
+```bash
+npm run db:backup                       # writes data/backups/app-<timestamp>.db
+npm run db:backup -- --out /path/to.db  # or an explicit destination
+```
+
+The script uses SQLite `VACUUM INTO` rather than copying the file. Two reasons, both load-bearing:
+
+- The database runs in WAL mode, so a plain copy of a live file can capture a torn state.
+- `VACUUM INTO` writes a compacted file, so free pages that may still hold deleted transcript text do not survive into the backup. A raw copy would quietly contradict the retention promise in the README.
+
+Every backup is reopened and checked before the command reports success — `integrity_check`, required tables, and row counts — so a corrupt snapshot fails at backup time rather than during a restore that is already an emergency.
+
+Restore into a scratch path and confirm the application starts against it before trusting a backup:
+
+```bash
+DATABASE_PATH=/tmp/restore-check.db npm run db:migrate
+```
+
+Store backups on encrypted storage with an expiry aligned to `TRANSCRIPT_RETENTION_DAYS`; a backup that outlives the retention window reintroduces the data the cleanup job deleted. Schedule the command with the host's scheduler (Railway cron, systemd timer, or `cron`).
+
+## Crash visibility
+
+The worker installs handlers for `uncaughtException` and `unhandledRejection`. Each logs a `fatal` structured event and exits non-zero so the supervisor restarts the process — a worker that survives an unhandled rejection processes nothing while looking alive.
+
+Set `ERROR_WEBHOOK_URL` to receive those reports as a JSON POST. It is deliberately a plain webhook rather than a vendor SDK: any tracker, chat channel, or alert router accepts one, and a self-hoster owes nothing to a third party to run this. Reports contain the component, the reason, the error name, and stack frames — never error messages, which can quote a transcript line, a recipient, or a credential that failed to parse.
+
 ## Monitoring signals
 
 `GET /api/health` returns every operational signal this deployment can see without a metrics stack, so one external uptime monitor polling one URL covers the list above. It answers 200 even when degraded — a degraded service is still serving, and the Railway deployment gate should not roll back a running deployment over a dead-letter job. **Alert on `status`, not on the HTTP code.**
@@ -81,7 +109,7 @@ Operational requirements:
 
 `degradedReasons` lists the machine-readable keys behind a degraded status, so an alert can route on cause rather than on a single boolean.
 
-The queue signal is the one worth wiring first. A stalled worker is invisible from outside: the site loads, calls arrive, and nothing is ever processed.
+The queue signal is the one worth wiring first. A stalled worker is invisible from outside: the site loads, calls arrive, and nothing is ever processed. The worker's own crash handlers, described above, cover the same failure from the inside.
 
 ## Production evolution
 
