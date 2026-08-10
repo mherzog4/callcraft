@@ -1,0 +1,21 @@
+package.json
+  s_853596a0c65a6f::t_cf8b809cde2d51 62
+package-lock.json
+  s_853596a0c65a6f::t_95efbaff035b2b 34,968-970,974,5737-5739,5749-5750,5760,5763-5767,5770,5773-5776,5788-5790,5794,5797
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "7a7ebecd42e96385fa925a3d3b4fb5149551c442",
+  "prompts": {},
+  "sessions": {
+    "s_853596a0c65a6f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3af94342-1b19-42ff-8875-10a00eeb6a03",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    }
+  }
+}
