@@ -3,6 +3,7 @@ import { ensureSetup } from "@/src/jobs/setup";
 import { queueConfirmedSend } from "@/src/jobs/worker";
 import { getSeller } from "@/src/db/repositories";
 import { isDemoMode } from "@/src/runtime/policy";
+import { enforceRateLimit } from "@/src/security/rate-limit";
 import { requireSeller } from "@/src/web/auth";
 import { requireSameOrigin, redirect } from "@/src/web/request";
 
@@ -20,6 +21,8 @@ export async function POST(request: Request) {
   ensureSetup();
   const auth = requireSeller(request);
   if ("response" in auth) return auth.response;
+  const limited = enforceRateLimit(`send:${auth.sellerId}`, 10);
+  if (limited) return limited;
   const form = await request.formData();
   const seller = getSeller(auth.sellerId);
   if (!seller) return new Response("Seller missing", { status: 404 });

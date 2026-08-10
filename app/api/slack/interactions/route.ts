@@ -110,6 +110,11 @@ function actor(teamId: string, userId: string) {
   };
 }
 
+// Deliberately not rate limited by address: Slack delivers every interaction
+// from its own egress, so an address bucket would throttle the workspace rather
+// than an attacker. Forgery is already blocked by the signing-secret check and
+// the five-minute replay window below, and the expensive actions downstream are
+// idempotent per draft revision.
 export async function POST(request: Request) {
   const env = getEnv();
   if (!allowsRealOAuth(env.APP_MODE))

@@ -4,6 +4,9 @@ import { getEnv } from "@/src/env";
 import { newOAuthState, signState } from "@/src/security/signing";
 import { allowsRealOAuth } from "@/src/runtime/policy";
 import { sellerIdFromRequest } from "@/src/web/auth";
+
+// Deliberately not rate limited for the same reason as the Slack start route:
+// it only signs state and redirects. The callback is the guarded half.
 export function GET(request: Request) {
   const env = getEnv();
   if (!allowsRealOAuth(env.APP_MODE))

@@ -3,6 +3,10 @@ import { getEnv } from "@/src/env";
 import { newOAuthState, signState } from "@/src/security/signing";
 import { allowsRealOAuth } from "@/src/runtime/policy";
 import { sellerIdFromRequest } from "@/src/web/auth";
+
+// Deliberately not rate limited: this handler signs state and redirects without
+// touching a provider, the database, or the model. The expensive half of the
+// flow is the callback, which requires a signed, short-lived state to proceed.
 export function GET(request: Request) {
   const env = getEnv();
   if (!allowsRealOAuth(env.APP_MODE))
