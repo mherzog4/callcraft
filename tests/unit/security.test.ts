@@ -4,6 +4,7 @@ import { decryptSecret, encryptSecret } from "@/src/security/crypto";
 import { newOAuthState, signState, verifyState } from "@/src/security/signing";
 import { verifySlackSignature } from "@/src/integrations/slack/signature";
 import { createSession, readSession } from "@/src/security/session";
+import { enforceRateLimit, resetRateLimits } from "@/src/security/rate-limit";
 import { requireSameOrigin } from "@/src/web/request";
 
 describe("credential and request security", () => {
@@ -62,5 +63,23 @@ describe("credential and request security", () => {
         nowSeconds: 1700000400,
       }),
     ).toBe(false);
+  });
+  it("bounds each key independently and rejects without revealing the key", () => {
+    resetRateLimits();
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      expect(enforceRateLimit("send:seller-1", 3)).toBeUndefined();
+    }
+    const rejected = enforceRateLimit("send:seller-1", 3);
+    expect(rejected?.status).toBe(429);
+    expect(enforceRateLimit("send:seller-2", 3)).toBeUndefined();
+    expect(enforceRateLimit("sync:seller-1", 3)).toBeUndefined();
+  });
+  it("releases a key after its window elapses", () => {
+    resetRateLimits();
+    expect(enforceRateLimit("setup:seller-1", 1, 1)).toBeUndefined();
+    expect(enforceRateLimit("setup:seller-1", 1, 1)?.status).toBe(429);
+    return new Promise((resolve) => setTimeout(resolve, 5)).then(() => {
+      expect(enforceRateLimit("setup:seller-1", 1, 1)).toBeUndefined();
+    });
   });
 });

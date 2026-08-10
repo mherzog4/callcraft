@@ -14,6 +14,7 @@ import {
 } from "@/src/db/repositories";
 import { isDemoMode, isEvaluationMode } from "@/src/runtime/policy";
 import { encryptSecret } from "@/src/security/crypto";
+import { enforceRateLimit } from "@/src/security/rate-limit";
 import { requireSeller } from "@/src/web/auth";
 import { requireSameOrigin, redirect } from "@/src/web/request";
 
@@ -139,6 +140,10 @@ export async function POST(request: Request) {
   ensureSetup();
   const auth = requireSeller(request);
   if ("response" in auth) return auth.response;
+  // Each submission can re-encrypt provider credentials and probe Gong for the
+  // user list, so it is bounded even though the session is already trusted.
+  const limited = enforceRateLimit(`setup:${auth.sellerId}`, 20);
+  if (limited) return limited;
   const form = await request.formData();
   const seller = getSeller(auth.sellerId);
   if (!seller) return new Response("Seller missing", { status: 404 });
