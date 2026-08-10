@@ -1,0 +1,10 @@
+# Review routing. Ownership is deliberately coarse: one maintainer, with the
+# security, evaluation, and decision-record surfaces called out so a change to
+# them is never merged as an incidental part of a larger pull request.
+* @mherzog4
+
+/src/security/ @mherzog4
+/src/evals/ @mherzog4
+/src/runtime/policy.ts @mherzog4
+/docs/adr/ @mherzog4
+/.github/workflows/ @mherzog4

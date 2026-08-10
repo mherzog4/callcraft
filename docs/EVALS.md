@@ -15,6 +15,12 @@ The versioned scenarios in `src/evals/scenarios.ts` currently cover:
 
 Every scenario contains synthetic transcript segments, participants, optional Gong-shaped context, expected concepts, forbidden unsupported terms, expected recipients, required evidence segment IDs, and a golden grounded result. Add scenarios instead of weakening thresholds when a regression reveals a new failure mode.
 
+### Dataset version
+
+`EVAL_DATASET_VERSION` in `src/evals/scenarios.ts` is stamped into every report, printed by `npm run eval`, and shown on `/evals`. Bump it whenever a change alters what a score means — adding or removing a scenario, editing expectations or forbidden terms, or regenerating a golden result. Do not bump it for wording or comment changes that leave scoring identical.
+
+Scores are only comparable within a single dataset version. A drop across a version boundary is not evidence of a model regression, and the review question for a version bump is therefore whether the dataset got stricter or merely different. This is what keeps the "do not weaken the gates" rule in [CONTRIBUTING.md](../CONTRIBUTING.md) reviewable rather than a matter of trust.
+
 ## Deterministic baseline
 
 ```bash
@@ -66,6 +72,14 @@ No API key, transcript, or OAuth token is written to the report. The included da
 ## Dashboard
 
 After authentication, open `/evals`. The page reads `data/evals/latest.json`, falling back to `evals/sample-report.json`. It ranks models and exposes scenario-level failures instead of presenting one opaque score.
+
+![The evaluation dashboard showing the dataset version, aggregate metrics, and per-scenario pass state](./images/evals.png)
+
+Regenerate the documentation screenshots from the seeded demo with:
+
+```bash
+CAPTURE=1 npx playwright test capture-screenshots
+```
 
 ## Optional sqlite-vec retrieval experiment
 
