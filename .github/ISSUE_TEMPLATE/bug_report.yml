@@ -1,0 +1,38 @@
+name: Bug report
+description: Report incorrect behavior in CallCraft
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Never paste customer transcripts, real recipient addresses, provider tokens, or `.env` contents. Use synthetic data only.
+  - type: input
+    id: mode
+    attributes:
+      label: APP_MODE
+      placeholder: demo | evaluation | production
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Commit or release
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      description: Include the commands you ran (for example `npm run db:seed`, `npm run worker`).
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Redacted logs or output
+      render: text

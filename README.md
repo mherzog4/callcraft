@@ -2,6 +2,7 @@
 
 CallCraft is an MIT-licensed, production-minded reference implementation and live Applied AI demo for individual sellers. It watches completed Gong-shaped calls, waits for the transcript, extracts an evidence-backed summary through OpenRouter, composes a follow-up, and sends it privately to Slack. The seller can inspect Gong context and transcript evidence, edit/regenerate, then explicitly confirm a Gmail send. Email is **never sent automatically**.
 
+[![CI](https://github.com/mherzog4/callcraft/actions/workflows/ci.yml/badge.svg)](https://github.com/mherzog4/callcraft/actions/workflows/ci.yml)
 [![Marketing site](https://img.shields.io/badge/site-callcraft--oss.vercel.app-b8f66d)](https://callcraft-oss.vercel.app)
 ![MIT](https://img.shields.io/badge/license-MIT-green)
 
@@ -114,7 +115,7 @@ npm run eval:retrieval
 npm run evaluation:doctor
 npm run acceptance:verify
 npm test
-npm run test:e2e
+npx playwright install chromium && npm run test:e2e
 npm run build
 npm run check
 ```
