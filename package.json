@@ -41,12 +41,12 @@
     "better-sqlite3": "^11.10.0",
     "drizzle-orm": "^0.45.2",
     "googleapis": "^173.0.0",
-    "next": "^16.2.12",
-    "nodemailer": "^9.0.3",
+    "next": "^16.3.0",
+    "nodemailer": "^9.0.4",
     "pino": "^10.3.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "sqlite-vec": "^0.1.7-alpha.2",
+    "sqlite-vec": "^0.1.9",
     "zod": "^3.25.76"
   },
   "devDependencies": {
@@ -58,10 +58,10 @@
     "@types/react-dom": "^19.2.4",
     "drizzle-kit": "^0.31.10",
     "eslint": "^9.36.0",
-    "eslint-config-next": "^16.2.12",
+    "eslint-config-next": "^16.3.0",
     "html-validate": "^11.6.2",
     "prettier": "^3.6.2",
-    "tsx": "^4.20.6",
+    "tsx": "^4.23.9",
     "typescript": "^5.9.2",
     "vitest": "^4.1.10"
   },
