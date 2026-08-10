@@ -62,4 +62,16 @@ describe("crash reporting", () => {
     await reportCrash(describeCrash("worker", "unhandledRejection", new Error("boom")));
     expect(fetchMock).not.toHaveBeenCalled();
   });
+
+  // `.env.example` ships the key blank and every host renders an unset
+  // variable as `KEY=`, so an empty string has to mean "not configured"
+  // rather than failing environment validation at startup.
+  it("treats an empty webhook value as unset", async () => {
+    process.env.ERROR_WEBHOOK_URL = "";
+    resetEnvForTests();
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    await reportCrash(describeCrash("worker", "uncaughtException", new Error("boom")));
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
 });
