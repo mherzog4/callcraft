@@ -8,6 +8,13 @@ updates:
     groups:
       npm-minor-patch:
         update-types: [minor, patch]
+    ignore:
+      # typescript-eslint refuses to load against the TS 7 API, so `npm run
+      # lint` fails on any TS 7 bump regardless of this repository's code.
+      # Tracking: https://github.com/typescript-eslint/typescript-eslint/issues/10940
+      # Remove this entry once typescript-eslint ships TS >=7 support.
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
   - package-ecosystem: github-actions
     directory: /
     schedule:
