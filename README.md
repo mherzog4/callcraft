@@ -6,9 +6,13 @@ CallCraft is an MIT-licensed, production-minded reference implementation and liv
 [![Marketing site](https://img.shields.io/badge/site-callcraft--oss.vercel.app-b8f66d)](https://callcraft-oss.vercel.app)
 ![MIT](https://img.shields.io/badge/license-MIT-green)
 
+![The call review screen: seeded Gong context, the composed draft, and every summary claim carrying the transcript segment ID it came from](docs/images/call-review.png)
+
+Every claim in the summary above carries the transcript segment ID it came from, and the draft is rendered from those claims by deterministic templates rather than free-form model prose. The screenshot is the seeded demo — synthetic transcript, reserved example-domain recipient, no provider contacted.
+
 ## Demo in five minutes (no Docker)
 
-Requirements: Node 20+ and npm 10+.
+Requirements: Node 20+ and npm 10+ on macOS or Linux, or Windows via WSL. `better-sqlite3` and `sqlite-vec` are native modules; a clean machine needs a C/C++ toolchain if no prebuilt binary matches. Verified on macOS and on Ubuntu with Node 22 in CI.
 
 ```bash
 cp .env.example .env

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { evalScenarios } from "@/src/evals/scenarios";
+import { evalScenarios, EVAL_DATASET_VERSION } from "@/src/evals/scenarios";
 import path from "node:path";
 import { readEvalReport, runBaselineEval, runLiveEval } from "@/src/evals/runner";
 import { scoreEvalCandidate } from "@/src/evals/scoring";
@@ -19,6 +19,15 @@ describe("Applied AI evaluation harness", () => {
   it("keeps the checked-in dashboard sample compatible with the report schema", async () => {
     const report = await readEvalReport(path.join(process.cwd(), "evals", "sample-report.json"));
     expect(report.models[0]?.aggregate.passRate).toBe(1);
+    expect(report.datasetVersion).toBeTruthy();
+  });
+
+  // A report that carries a stale version silently invites comparison between
+  // runs scored against different scenarios, which is the one comparison the
+  // dataset version exists to prevent.
+  it("stamps every report with the current dataset version", async () => {
+    const report = await runBaselineEval("test-commit");
+    expect(report.datasetVersion).toBe(EVAL_DATASET_VERSION);
   });
 
   it("produces a fully passing no-network golden baseline", async () => {
