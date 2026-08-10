@@ -1,0 +1,19 @@
+tests/unit/security.test.ts
+  s_853596a0c65a6f::t_b9f43c638c5bf1 77-82,84-89
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "8784b5df50150abf7fa93dd3f4cd69e52ca320e8",
+  "prompts": {},
+  "sessions": {
+    "s_853596a0c65a6f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3af94342-1b19-42ff-8875-10a00eeb6a03",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Mherzog4 <matthewherzog4@gmail.com>"
+    }
+  }
+}
