@@ -74,12 +74,18 @@ describe("credential and request security", () => {
     expect(enforceRateLimit("send:seller-2", 3)).toBeUndefined();
     expect(enforceRateLimit("sync:seller-1", 3)).toBeUndefined();
   });
-  it("releases a key after its window elapses", () => {
+  // The two halves use different windows on purpose. Rejection is asserted
+  // under a window long enough that no scheduling delay can expire it, and
+  // release is asserted under a window short enough that any real delay
+  // exceeds it. Sharing one short window made rejection depend on the test
+  // running faster than its own limit.
+  it("rejects within the window and releases the key after it elapses", async () => {
     resetRateLimits();
-    expect(enforceRateLimit("setup:seller-1", 1, 1)).toBeUndefined();
-    expect(enforceRateLimit("setup:seller-1", 1, 1)?.status).toBe(429);
-    return new Promise((resolve) => setTimeout(resolve, 5)).then(() => {
-      expect(enforceRateLimit("setup:seller-1", 1, 1)).toBeUndefined();
-    });
+    expect(enforceRateLimit("setup:seller-1", 1, 60_000)).toBeUndefined();
+    expect(enforceRateLimit("setup:seller-1", 1, 60_000)?.status).toBe(429);
+
+    expect(enforceRateLimit("setup:seller-2", 1, 1)).toBeUndefined();
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(enforceRateLimit("setup:seller-2", 1, 1)).toBeUndefined();
   });
 });
