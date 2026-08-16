@@ -49,7 +49,7 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "sqlite-vec": "^0.1.9",
-    "zod": "^3.25.76"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.1",
